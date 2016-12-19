@@ -7,6 +7,28 @@ Setup script.
 from distutils.core import Command
 from setuptools import setup
 
+import platform
+
+tableau_sdk = None
+system = platform.system()
+architecture = platform.architecture()[0]
+
+if architecture == '64bit':
+    if system == 'Darwin':
+        tableau_sdk = 'https://downloads.tableau.com/tssoftware/Tableau-SDK-Python-OSX-64Bit-10-1-1.tar.gz'
+    elif system == 'Windows':
+        tableau_sdk = 'https://downloads.tableau.com/tssoftware/Tableau-SDK-Python-Win-64Bit-10-1-1.zip'
+    elif system == 'Linux':
+        tableau_sdk = 'https://downloads.tableau.com/tssoftware/Tableau-SDK-Python-Linux-64Bit-10-1-1.tar.gz'
+elif architecture == '32bit':
+    if system == 'Windows':
+        tableau_sdk = 'https://downloads.tableau.com/tssoftware/Tableau-SDK-C-Java-32Bit-10-1-1.zip'
+    elif system == 'Linux':
+        tableau_sdk = 'https://downloads.tableau.com/tssoftware/Tableau-SDK-Python-Linux-32Bit-10-1-1.tar.gz'
+
+if tableau_sdk is None:
+    raise Exception('Not compatible system')
+
 
 class Coverage(Command):
     """
@@ -53,6 +75,9 @@ setup(
     },
     install_requires=[
         'lxml',
+    ],
+    dependency_link=[
+        tableau_sdk,
     ],
     license='Apache License (2.0)',
     name='auto_extract',
