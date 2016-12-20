@@ -84,6 +84,30 @@ class TDSContentHandler(object):
                     'connection': connection attributes
                 }
 
+
+        Examples
+        --------
+        >>> datasource = etree.parse('sample/sample.tds').getroot()
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_content_handler.parse(datasource)
+        >>> tds_content_handler.metadata == {
+        ...     u'datasource': {
+        ...             'formatted-name': 'Datasource Example',
+        ...             'inline': 'true'
+        ...     },
+        ...     u'connection': {
+        ...             'authentication': 'sqlserver',
+        ...             'class': 'sqlserver',
+        ...             'dbname': 'DATABASE_NAME',
+        ...             'minimum-driver-version': 'SQL Server Native Client 10.0',
+        ...             'odbc-native-protocol': 'yes',
+        ...             'one-time-sql': '',
+        ...             'server': '0.0.0.0',
+        ...             'username': 'username'
+        ...     }
+        ... }
+        True
+
         """
         return self._tds_metadata
 
