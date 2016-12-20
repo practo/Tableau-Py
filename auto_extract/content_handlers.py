@@ -97,4 +97,9 @@ class TDSContentHandler(object):
             element tree representing a tableau datasource
 
         """
-        pass
+        self._tds_metadata['datasource'] = self._datasource(tds_xml)[0].attrib
+
+        connection = self._connection(tds_xml)[0]
+        named_connection = self._named_connection(connection)[0]
+
+        self._tds_metadata['connection'] = self._connection(named_connection)[0].attrib
