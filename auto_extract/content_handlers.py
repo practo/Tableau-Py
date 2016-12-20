@@ -50,6 +50,51 @@ class TDSContentHandler(object):
                     ...
                 }
 
+
+        Examples
+        --------
+        >>> import lxml.etree as etree
+        >>> datasource = etree.parse('sample/sample.tds').getroot()
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_content_handler.parse(datasource)
+        >>> tds_content_handler.columns[:2] == [{
+        ...     'ordinal': '1',
+        ...     'parent-name': '[TABLE_NAME]',
+        ...     'remote-type': '7',
+        ...     'aggregation': 'Year',
+        ...     'remote-alias': 'REMOTE_ALIAS1',
+        ...     'remote-name': 'REMOTE_COLUMN_NAME1',
+        ...     'attributes': {
+        ...         'attribute': ['"SQL_TYPE_DATE"', '"SQL_C_TYPE_DATE"', 'true']
+        ...     },
+        ...     'local-name': '[LOCAL_COLUMN_NAME1]',
+        ...     'local-type': 'date',
+        ...     'class': 'column',
+        ...     'contains-null': 'true'
+        ... },
+        ... {
+        ...      'ordinal': '2',
+        ...      'parent-name': '[TABLE_NAME]',
+        ...      'remote-type': '130',
+        ...      'padded-semantics': 'true',
+        ...      'aggregation': 'Count',
+        ...      'remote-alias': 'REMOTE_ALIAS2',
+        ...      'width': '100',
+        ...      'remote-name': 'REMOTE_COLUMN_NAME2',
+        ...      'attributes': {
+        ...          'attribute': ['"SQL_WVARCHAR"', '"SQL_C_WCHAR"', '"true"']
+        ...      },
+        ...      'collation': {
+        ...          'flag': '2147483649',
+        ...          'name': 'LEN_RUS_S2_VWIN'
+        ...      },
+        ...      'local-name': '[LOCAL_COLUMN_NAME2]',
+        ...      'local-type': 'string',
+        ...      'class': 'column',
+        ...      'contains-null': 'true'
+        ... }]
+        True
+
         """
         return self._tds_columns
 
@@ -127,3 +172,22 @@ class TDSContentHandler(object):
         assert isinstance(self._tds_metadata['connection'], dict), \
             'connection information is not dict'
         assert len(self._tds_metadata['connection']) != 0, 'connection information is empty'
+
+        metadata_records = connection_object.get('metadata-records')
+
+        if metadata_records is None:
+            self._tds_columns = list()
+            return
+
+        assert isinstance(metadata_records, dict), 'metadata-records is not dict'
+
+        self._tds_columns = metadata_records.get('metadata-record')
+
+        assert self._tds_columns is not None, 'no tag metadata-record exists'
+
+        # when only one column information is returned it will be in form of dict
+        # thus we need to convert it into list
+        if isinstance(self._tds_columns, dict):
+            self._tds_columns = [self._tds_columns]
+
+        assert isinstance(self._tds_columns, list), 'tds_columns not a list'
