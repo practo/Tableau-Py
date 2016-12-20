@@ -9,7 +9,9 @@ Readers
 """
 
 from __future__ import absolute_import, print_function, unicode_literals
+import os
 
+from pathlib2 import Path
 import lxml.etree as etree
 
 
@@ -91,4 +93,19 @@ class TDSReader(object):
             when `tds_file` is not xml parsable
 
         """
-        pass
+        tds_file_path = Path(tds_file)
+        absolute_path = str(tds_file_path.resolve())
+
+        if not tds_file_path.exists():
+            raise IOError('%r does not exists' % absolute_path)
+
+        if not tds_file_path.is_file():
+            raise IOError('%r is not a file' % absolute_path)
+
+        if not os.access(absolute_path, os.R_OK):
+            raise IOError('%r is not readable' % absolute_path)
+
+        tree = etree.parse(absolute_path, parser=self._parser)
+        root = tree.getroot()
+
+        self._xml_content_handler.parse(root)

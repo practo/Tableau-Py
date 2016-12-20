@@ -75,6 +75,7 @@ setup(
     },
     install_requires=[
         'lxml',
+        'pathlib2',
     ],
     dependency_link=[
         tableau_sdk,
