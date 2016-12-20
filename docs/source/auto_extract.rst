@@ -12,6 +12,14 @@ auto_extract.content_handlers module
     :undoc-members:
     :show-inheritance:
 
+auto_extract.readers module
+---------------------------
+
+.. automodule:: auto_extract.readers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
