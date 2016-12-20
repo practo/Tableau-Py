@@ -11,7 +11,7 @@ Content Handlers
 
 from __future__ import absolute_import, unicode_literals
 
-import lxml.etree as etree
+from auto_extract.xml_as_dictionary import XmlDictConfig
 
 
 class TDSContentHandler(object):
@@ -19,21 +19,6 @@ class TDSContentHandler(object):
     Represents an object containing parsed information from a tableau datasource file
 
     """
-
-    #: :py:obj:`~lxml.etree.XPath`: to find datasource element from element tree
-    _datasource = etree.XPath('./datasource')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find connection element from element tree
-    _connection = etree.XPath('connection')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find named connection elements from connection element tree
-    _named_connection = etree.XPath('named-connections/named-connection')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find relation elements from connection element tree
-    _relation = etree.XPath('relation')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find metadata record elements from connection element tree
-    _metadata_record = etree.XPath('metadata-records/metadata-record[@class="column"]')
 
     def __init__(self):
         super(TDSContentHandler, self).__init__()
@@ -65,6 +50,79 @@ class TDSContentHandler(object):
                     ...
                 }
 
+
+        Examples
+        --------
+        >>> import lxml.etree as etree
+        >>> datasource = etree.parse('sample/sample.tds').getroot()
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_content_handler.parse(datasource)
+        >>> tds_content_handler.columns[:2] == [{
+        ...     'ordinal': '1',
+        ...     'parent-name': '[TABLE_NAME]',
+        ...     'remote-type': '7',
+        ...     'aggregation': 'Year',
+        ...     'remote-alias': 'REMOTE_ALIAS1',
+        ...     'remote-name': 'REMOTE_COLUMN_NAME1',
+        ...      'attributes': {
+        ...          'attribute': [{
+        ...             'datatype': 'string',
+        ...             'name': 'DebugRemoteType',
+        ...             '_text': '"SQL_TYPE_DATE"'
+        ...           },
+        ...           {
+        ...             'datatype': 'string',
+        ...             'name': 'DebugWireType',
+        ...             '_text': '"SQL_C_TYPE_DATE"'
+        ...           },
+        ...           {
+        ...             'datatype': 'boolean',
+        ...             'name': 'TypeIsDateTime2orDate',
+        ...             '_text': 'true'
+        ...           }]
+        ...      },
+        ...     'local-name': '[LOCAL_COLUMN_NAME1]',
+        ...     'local-type': 'date',
+        ...     'class': 'column',
+        ...     'contains-null': 'true'
+        ... },
+        ... {
+        ...      'ordinal': '2',
+        ...      'parent-name': '[TABLE_NAME]',
+        ...      'remote-type': '130',
+        ...      'padded-semantics': 'true',
+        ...      'aggregation': 'Count',
+        ...      'remote-alias': 'REMOTE_ALIAS2',
+        ...      'width': '100',
+        ...      'remote-name': 'REMOTE_COLUMN_NAME2',
+        ...      'attributes': {
+        ...          'attribute': [{
+        ...             'datatype': 'string',
+        ...             'name': 'DebugRemoteType',
+        ...             '_text': '"SQL_WVARCHAR"',
+        ...           },
+        ...           {
+        ...             'datatype': 'string',
+        ...             'name': 'DebugWireType',
+        ...             '_text': '"SQL_C_WCHAR"',
+        ...           },
+        ...           {
+        ...             'datatype': 'string',
+        ...             'name': 'TypeIsVarchar',
+        ...             '_text': '"true"',
+        ...           }]
+        ...      },
+        ...      'collation': {
+        ...          'flag': '2147483649',
+        ...          'name': 'LEN_RUS_S2_VWIN'
+        ...      },
+        ...      'local-name': '[LOCAL_COLUMN_NAME2]',
+        ...      'local-type': 'string',
+        ...      'class': 'column',
+        ...      'contains-null': 'true'
+        ... }]
+        True
+
         """
         return self._tds_columns
 
@@ -84,6 +142,31 @@ class TDSContentHandler(object):
                     'connection': connection attributes
                 }
 
+
+        Examples
+        --------
+        >>> import lxml.etree as etree
+        >>> datasource = etree.parse('sample/sample.tds').getroot()
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_content_handler.parse(datasource)
+        >>> tds_content_handler.metadata == {
+        ...     u'datasource': {
+        ...             'formatted-name': 'Datasource Example',
+        ...             'inline': 'true'
+        ...     },
+        ...     u'connection': {
+        ...             'authentication': 'sqlserver',
+        ...             'class': 'sqlserver',
+        ...             'dbname': 'DATABASE_NAME',
+        ...             'minimum-driver-version': 'SQL Server Native Client 10.0',
+        ...             'odbc-native-protocol': 'yes',
+        ...             'one-time-sql': '',
+        ...             'server': '0.0.0.0',
+        ...             'username': 'username'
+        ...     }
+        ... }
+        True
+
         """
         return self._tds_metadata
 
@@ -97,4 +180,42 @@ class TDSContentHandler(object):
             element tree representing a tableau datasource
 
         """
-        pass
+        self._tds_metadata['datasource'] = tds_xml.attrib
+
+        connection = tds_xml.find('connection')
+        connection_object = XmlDictConfig(connection)
+
+        named_connections = connection_object.get('named-connections')
+
+        assert named_connections is not None, 'named-connections does not exists'
+
+        named_connection = named_connections.get('named-connection')
+
+        assert named_connection is not None, 'named-connection does not exist'
+        assert isinstance(named_connection, dict), 'named-connection is not an instance of dict'
+
+        self._tds_metadata['connection'] = named_connection.get('connection')
+
+        assert self._tds_metadata['connection'] is not None, 'connection information is none'
+        assert isinstance(self._tds_metadata['connection'], dict), \
+            'connection information is not dict'
+        assert len(self._tds_metadata['connection']) != 0, 'connection information is empty'
+
+        metadata_records = connection_object.get('metadata-records')
+
+        if metadata_records is None:
+            self._tds_columns = list()
+            return
+
+        assert isinstance(metadata_records, dict), 'metadata-records is not dict'
+
+        self._tds_columns = metadata_records.get('metadata-record')
+
+        assert self._tds_columns is not None, 'no tag metadata-record exists'
+
+        # when only one column information is returned it will be in form of dict
+        # thus we need to convert it into list
+        if isinstance(self._tds_columns, dict):
+            self._tds_columns = [self._tds_columns]
+
+        assert isinstance(self._tds_columns, list), 'tds_columns not a list'
