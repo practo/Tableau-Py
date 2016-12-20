@@ -21,7 +21,7 @@ class TDSContentHandler(object):
     """
 
     #: :py:obj:`~lxml.etree.XPath`: to find datasource element from element tree
-    _datasource = etree.XPath('./datasource')
+    _datasource = etree.XPath('../datasource')
 
     #: :py:obj:`~lxml.etree.XPath`: to find connection element from element tree
     _connection = etree.XPath('connection')
