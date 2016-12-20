@@ -16,6 +16,8 @@
     -   id: check-case-conflict
     -   id: check-docstring-first
     -   id: check-merge-conflict
+    -   id: check-xml
+        files: \.(xml|tds)$
     -   id: check-yaml
     -   id: debug-statements
     -   id: double-quote-string-fixer
