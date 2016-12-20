@@ -64,9 +64,23 @@ class TDSContentHandler(object):
         ...     'aggregation': 'Year',
         ...     'remote-alias': 'REMOTE_ALIAS1',
         ...     'remote-name': 'REMOTE_COLUMN_NAME1',
-        ...     'attributes': {
-        ...         'attribute': ['"SQL_TYPE_DATE"', '"SQL_C_TYPE_DATE"', 'true']
-        ...     },
+        ...      'attributes': {
+        ...          'attribute': [{
+        ...             'datatype': 'string',
+        ...             'name': 'DebugRemoteType',
+        ...             '_text': '"SQL_TYPE_DATE"'
+        ...           },
+        ...           {
+        ...             'datatype': 'string',
+        ...             'name': 'DebugWireType',
+        ...             '_text': '"SQL_C_TYPE_DATE"'
+        ...           },
+        ...           {
+        ...             'datatype': 'boolean',
+        ...             'name': 'TypeIsDateTime2orDate',
+        ...             '_text': 'true'
+        ...           }]
+        ...      },
         ...     'local-name': '[LOCAL_COLUMN_NAME1]',
         ...     'local-type': 'date',
         ...     'class': 'column',
@@ -82,7 +96,21 @@ class TDSContentHandler(object):
         ...      'width': '100',
         ...      'remote-name': 'REMOTE_COLUMN_NAME2',
         ...      'attributes': {
-        ...          'attribute': ['"SQL_WVARCHAR"', '"SQL_C_WCHAR"', '"true"']
+        ...          'attribute': [{
+        ...             'datatype': 'string',
+        ...             'name': 'DebugRemoteType',
+        ...             '_text': '"SQL_WVARCHAR"',
+        ...           },
+        ...           {
+        ...             'datatype': 'string',
+        ...             'name': 'DebugWireType',
+        ...             '_text': '"SQL_C_WCHAR"',
+        ...           },
+        ...           {
+        ...             'datatype': 'string',
+        ...             'name': 'TypeIsVarchar',
+        ...             '_text': '"true"',
+        ...           }]
         ...      },
         ...      'collation': {
         ...          'flag': '2147483649',

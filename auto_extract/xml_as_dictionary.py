@@ -30,9 +30,18 @@ class XmlListConfig(list):
                 elif element[0].tag == element[1].tag:
                     self.append(XmlListConfig(element))
             elif element.text:
+                to_append = None
                 text = element.text.strip()
-                if text:
-                    self.append(text)
+
+                if element.items():
+                    to_append = dict(element.items())
+                    if text:
+                        to_append.update({'_text': text})
+                elif text:
+                    to_append = text
+
+                if to_append is not None:
+                    self.append(to_append)
 
 
 class XmlDictConfig(dict):
@@ -54,8 +63,6 @@ class XmlDictConfig(dict):
 
     Notes
     -----
-    - It assumes that if there are attributes in a tag, there won't be any text.
-
     - It assumes if first 2 children's tags are different then all are different
       else all are same (in which case it treats the element as list). So an element
       expected to contain only one element will be returned as a `dict`.
@@ -89,18 +96,18 @@ class XmlDictConfig(dict):
                     # here, we put the list in dictionary; the key is the
                     # tag name the list elements all share in common, and
                     # the value is the list itself
-                    a_dict = {element[0].tag: XmlListConfig(element)} # pylint: disable=locally-disabled,R0204
+                    a_dict = {element[0].tag: XmlListConfig(element)}  # pylint: disable=locally-disabled,R0204
                 # if the tag has attributes, add those to the dict
                 if element.items():
                     a_dict.update(dict(element.items()))
                 self.update({element.tag: a_dict})
-            # this assumes that if you've got an attribute in a tag,
-            # you won't be having any text. This may or may not be a
-            # good idea -- time will tell. It works for the way we are
-            # currently doing XML configuration files...
+            # if you have got an attribute in a tag, text will be inserted
+            # in dict with key _text
             elif element.items():
                 self.update({element.tag: dict(element.items())})
+                if element.text:
+                    self[element.tag].update({'_text': element.text})
             # finally, if there are no child tags and no attributes, extract
-            # the text
+            # the text directly as value
             else:
                 self.update({element.tag: element.text})
