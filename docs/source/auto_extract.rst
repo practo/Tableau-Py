@@ -20,6 +20,14 @@ auto_extract.readers module
     :undoc-members:
     :show-inheritance:
 
+auto_extract.xml_as_dictionary module
+-------------------------------------
+
+.. automodule:: auto_extract.xml_as_dictionary
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
