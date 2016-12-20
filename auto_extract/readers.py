@@ -57,6 +57,15 @@ class TDSReader(object):
         -------
         TDSContentHandler.columns
 
+        Examples
+        --------
+        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_reader = TDSReader(tds_content_handler)
+        >>> tds_reader.read('sample/sample.tds')
+        >>> tds_reader.get_datasource_columns() == tds_content_handler.columns
+        True
+
         """
         tds_content = self._xml_content_handler
 
@@ -69,6 +78,15 @@ class TDSReader(object):
         Returns
         -------
         TDSContentHandler.metadata
+
+        Examples
+        --------
+        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_reader = TDSReader(tds_content_handler)
+        >>> tds_reader.read('sample/sample.tds')
+        >>> tds_reader.get_datasource_metadata() == tds_content_handler.metadata
+        True
 
         """
         tds_content = self._xml_content_handler
@@ -91,6 +109,25 @@ class TDSReader(object):
             when `tds_file` is not readable
         :py:exc:`~lxml.etree.XMLSchemaParseError`
             when `tds_file` is not xml parsable
+
+
+        Examples
+        --------
+        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_reader = TDSReader(tds_content_handler)
+        >>> tds_reader.read('some random file') #doctest: +ELLIPSIS
+        Traceback (most recent call last):
+            ...
+        OSError: [Errno 2] No such file or directory: '.../some random file'
+
+        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_reader = TDSReader(tds_content_handler)
+        >>> tds_reader.read('sample') #doctest: +ELLIPSIS
+        Traceback (most recent call last):
+            ...
+        IOError: '.../sample' is not a file
 
         """
         tds_file_path = Path(tds_file)
