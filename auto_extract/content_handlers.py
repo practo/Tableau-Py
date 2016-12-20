@@ -11,7 +11,7 @@ Content Handlers
 
 from __future__ import absolute_import, unicode_literals
 
-import lxml.etree as etree
+from auto_extract.xml_as_dictionary import XmlDictConfig
 
 
 class TDSContentHandler(object):
@@ -19,21 +19,6 @@ class TDSContentHandler(object):
     Represents an object containing parsed information from a tableau datasource file
 
     """
-
-    #: :py:obj:`~lxml.etree.XPath`: to find datasource element from element tree
-    _datasource = etree.XPath('../datasource')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find connection element from element tree
-    _connection = etree.XPath('connection')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find named connection elements from connection element tree
-    _named_connection = etree.XPath('named-connections/named-connection')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find relation elements from connection element tree
-    _relation = etree.XPath('relation')
-
-    #: :py:obj:`~lxml.etree.XPath`: to find metadata record elements from connection element tree
-    _metadata_record = etree.XPath('metadata-records/metadata-record[@class="column"]')
 
     def __init__(self):
         super(TDSContentHandler, self).__init__()
@@ -87,6 +72,7 @@ class TDSContentHandler(object):
 
         Examples
         --------
+        >>> import lxml.etree as etree
         >>> datasource = etree.parse('sample/sample.tds').getroot()
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_content_handler.parse(datasource)
@@ -121,9 +107,23 @@ class TDSContentHandler(object):
             element tree representing a tableau datasource
 
         """
-        self._tds_metadata['datasource'] = self._datasource(tds_xml)[0].attrib
+        self._tds_metadata['datasource'] = tds_xml.attrib
 
-        connection = self._connection(tds_xml)[0]
-        named_connection = self._named_connection(connection)[0]
+        connection = tds_xml.find('connection')
+        connection_object = XmlDictConfig(connection)
 
-        self._tds_metadata['connection'] = self._connection(named_connection)[0].attrib
+        named_connections = connection_object.get('named-connections')
+
+        assert named_connections is not None, 'named-connections does not exists'
+
+        named_connection = named_connections.get('named-connection')
+
+        assert named_connection is not None, 'named-connection does not exist'
+        assert isinstance(named_connection, dict), 'named-connection is not an instance of dict'
+
+        self._tds_metadata['connection'] = named_connection.get('connection')
+
+        assert self._tds_metadata['connection'] is not None, 'connection information is none'
+        assert isinstance(self._tds_metadata['connection'], dict), \
+            'connection information is not dict'
+        assert len(self._tds_metadata['connection']) != 0, 'connection information is empty'
