@@ -85,13 +85,17 @@ setup(
         'auto_extract',
     ],
     scripts=[],
+    setup_requires=[
+        'pytest-runner>=2.9,<3.0',
+    ],
     test_suite='tests',
     tests_require=[
         'codecov>=2.0.3,<3.0.0',
         'coverage>=4.0.3,<5.0.0',
         'Sphinx>=1.4.1,<2.0.0',
         'tox>=2.3.1,<3.0.0',
-        'virtualenv>=15.0.1,<16.0.0'
+        'virtualenv>=15.0.1,<16.0.0',
+        'pytest>=3.0.5,<3.1.0',
     ],
     url='',
     version='1.0.0'
