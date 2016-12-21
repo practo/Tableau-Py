@@ -127,20 +127,20 @@ class TDSReader(object):
         >>> tds_reader.read('sample') #doctest: +ELLIPSIS
         Traceback (most recent call last):
             ...
-        IOError: '.../sample' is not a file
+        IOError: not a file
 
         """
         tds_file_path = Path(tds_file)
         absolute_path = str(tds_file_path.resolve())
 
         if not tds_file_path.exists():
-            raise IOError('%r does not exists' % absolute_path)
+            raise IOError('does not exists')
 
         if not tds_file_path.is_file():
-            raise IOError('%r is not a file' % absolute_path)
+            raise IOError('not a file')
 
         if not os.access(absolute_path, os.R_OK):
-            raise IOError('%r is not readable' % absolute_path)
+            raise IOError('not readable')
 
         tree = etree.parse(absolute_path, parser=self._parser)
         root = tree.getroot()
