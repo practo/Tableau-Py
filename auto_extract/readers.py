@@ -142,6 +142,9 @@ class TDSReader(object):
         if not os.access(absolute_path, os.R_OK):
             raise IOError('not readable')
 
+        if tds_file_path.suffix != '.tds':
+            raise IOError('does not have extension `.tds`')
+
         tree = etree.parse(absolute_path, parser=self._parser)
         root = tree.getroot()
 
