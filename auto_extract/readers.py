@@ -35,12 +35,12 @@ class TDSReader(object):
 
     def define_table(self):
         """
-        Creates a `TableauDefinition` object from the column information returned after parsing
+        Creates a TableDefinition object from the column information returned after parsing
         the tableau datasource file
 
         Returns
         -------
-        :py:exc:`~tableausdk.Extract.TableauDefinition`
+        :py:obj:`~tableausdk.Extract.TableDefinition`
 
         Raises
         ------

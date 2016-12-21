@@ -20,7 +20,7 @@ Contents:
 
 .. py:module:: tableausdk.Extract
 
-.. py:class:: TableauDefinition
+.. py:class:: TableDefinition
 
    Represents the schema for a table in a Tableau data extract.
 
