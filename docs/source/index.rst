@@ -13,10 +13,6 @@ Contents:
 
    modules
 
-.. py:exception:: IOError
-
-   Raised when an I/O operation fails for an I/O-related reason, e.g., “file not found” or “disk full”.
-
 
 :mod:`lxml.etree` -- XML Element Tree parser
 --------------------------------------------

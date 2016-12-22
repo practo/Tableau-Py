@@ -105,7 +105,7 @@ class TDSReader(object):
 
         Raises
         ------
-        :py:exc:`IOError`
+        OSError
             when `tds_file` is not readable
         :py:exc:`~lxml.etree.XMLSchemaParseError`
             when `tds_file` is not xml parsable
