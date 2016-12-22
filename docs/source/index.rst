@@ -11,6 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   usage
    modules
 
 :mod:`lxml.etree` -- XML Element Tree parser
