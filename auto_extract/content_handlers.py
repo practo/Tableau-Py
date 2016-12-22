@@ -215,3 +215,9 @@ class TDSContentHandler(object):
             self._tds_columns = [self._tds_columns]
 
         assert isinstance(self._tds_columns, list), 'tds_columns not a list'
+
+
+if __name__ == '__main__':
+    import doctest
+
+    doctest.testmod()
