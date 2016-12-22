@@ -6,26 +6,40 @@
 Welcome to AutoExtract's documentation!
 =======================================
 
+Usage
+-----
+Calling for help
+
+::
+
+    $ auto_extract --help
+
+To Create tableau datasource extracts from datasource files
+
+::
+
+    $ auto_extract file1.tds file2.tds
+
+or with overwrite option
+
+::
+
+    $ auto_extract --overwrite *.tds
+
+Add static suffix or prefix to generated files
+
+::
+
+    $ auto_extract --prefix TDE_ --suffix _SUFFIX *.tds
+
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   usage
    modules
-
-:mod:`lxml.etree` -- XML Element Tree parser
---------------------------------------------
-.. automodule:: lxml.etree
-   :members: Element, XPath, XMLParser, XMLSchemaParseError
-   :undoc-members:
-
-:mod:`tableausdk.Types` -- Tableau Types
-----------------------------------------
-.. automodule:: tableausdk.Types
-   :members: Type, Collation
-   :undoc-members:
-   :show-inheritance:
+   external_dependencies
 
 
 Indices and tables
