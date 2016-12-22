@@ -46,44 +46,73 @@ def main(files, overwrite):
             if absolute_path in tde_success_map:
                 continue
 
-            table_definition = None
             tde_path = Path(file_name).with_suffix('.tde')
-
-            tde_success_map[absolute_path] = {
-                'status': _status.FAILED,
-                'local-path': file_name,
-                'msg': ''
-            }
 
             if overwrite and tde_path.exists():
                 tde_path.unlink()
 
-            new_extract = Extract(str(tde_path))
-
-            try:
-                tds_content_handler = TDSContentHandler()
-                tds_reader = TDSReader(tds_content_handler)
-
-                tds_reader.read(file_name)
-                table_definition = tds_reader.define_table()
-
-                new_extract.addTable('Extract', tableDefinition=table_definition)
-                tde_success_map[absolute_path]['status'] = _status.SUCCESS
-            except (IOError, OSError) as err:
-                tde_success_map[absolute_path]['msg'] = str(err)
-            except TableauException:
-                tde_success_map[absolute_path]['msg'] = GetLastErrorMessage()
-            finally:
-                if table_definition is not None:
-                    table_definition.close()
-
-                # Close the extract in order to save the .tde file and clean up resources
-                new_extract.close()
+            tde_success_map[absolute_path] = _generate_extract(file_name, str(tde_path))
 
     for key in tde_success_map:
         _print_result(tde_success_map[key], cols=cols)
 
     ExtractAPI.cleanup()
+
+
+def _generate_extract(tds_file_name, tde_file_name):
+    """
+    Generates a tde file from tds file
+
+    Parameters
+    ----------
+    tds_file_name : str
+        tableau datasource file name / path
+    tde_file_name : str
+        tableau extract file name / path
+
+    Returns
+    -------
+    dict
+        result in the format
+
+        ::
+
+            {
+                'status': True | False depending on success or failure,
+                'msg': error message if any,
+                'local-path': path of the tableau datasource file
+            }
+
+    """
+    new_extract = Extract(tde_file_name)
+    table_definition = None
+    result = {
+        'status': _status.FAILED,
+        'local-path': tds_file_name,
+        'msg': ''
+    }
+
+    try:
+        tds_content_handler = TDSContentHandler()
+        tds_reader = TDSReader(tds_content_handler)
+
+        tds_reader.read(tds_file_name)
+        table_definition = tds_reader.define_table()
+
+        new_extract.addTable('Extract', tableDefinition=table_definition)
+        result['status'] = _status.SUCCESS
+    except (IOError, OSError) as err:
+        result['msg'] = str(err)
+    except TableauException:
+        result['msg'] = GetLastErrorMessage()
+    finally:
+        if table_definition is not None:
+            table_definition.close()
+
+        # Close the extract in order to save the .tde file and clean up resources
+        new_extract.close()
+
+    return result
 
 
 def _print_result(tde_result, cols=80):
