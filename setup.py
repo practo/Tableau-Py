@@ -128,6 +128,6 @@ setup(
         'virtualenv>=15.0.1,<16.0.0',
         'pytest>=3.0.5,<3.1.0',
     ],
-    url='',
+    url='https://github.com/practo/Tableau-Py',
     version='1.0.0'
 )
