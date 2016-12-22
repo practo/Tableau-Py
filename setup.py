@@ -77,7 +77,7 @@ setup(
         'lxml',
         'pathlib2',
     ],
-    dependency_link=[
+    dependency_links=[
         tableau_sdk,
     ],
     license='Apache License (2.0)',
