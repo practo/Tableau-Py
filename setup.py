@@ -97,6 +97,11 @@ setup(
         'coverage': Coverage,
         'install_dependencies': TableauSDKInstall,
     },
+    entry_points={
+        'console_scripts': [
+            'auto_extract = auto_extract.cli:main'
+        ]
+    },
     install_requires=[
         'lxml',
         'pathlib2',
