@@ -18,31 +18,24 @@ To update the project from within the project's folder you can run the following
 git pull --rebase
 ```
 
-Install pre-commit cli:
-
-```bash
-pip install pre-commit
-```
-
 ### Building
-
-Install [pre-commit](http://pre-commit.com) hooks
-
-```bash
-pre-commit install
-```
-
-This will create automatically create a virtual env `py_env-default`
 
 Install the project's dependencies.
 
 ```bash
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-python setup.py install_dependencies
+$ pip install -r requirements.txt       #library requirements
+$ pip install -r requirements-dev.txt   # dev requirements
+$ python setup.py install_dependencies  # external dependencies (tableau sdk)
+$ pre-commit install                    # install a pre-commit hook in .git repository
+$ virtualenv venv                       # create a virtual environment
+$ . venv/bin/activate                   # activate created virtual environment
 ```
 
-Last command will install external dependency ([TableauSDK](https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/tableau_sdk_installing.htm)) for this project looking for supported platform and architecture.
+**Notes**:
+* For more information about pre-commit by yelp click [here](http://pre-commit.com).
+* For more information about TableauSDK click [here](https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/tableau_sdk_installing.htm). `install_dependencies` command will automatically figure out the required sdk for current architecture and system.
+* Project is tested with TableauSDK version `10100.16.1103.2343` and supports Tableau version 10.0 for now, more support will be added in future.
+* If you find unexpected behaviour while running anything, just check that the venv virtual environment is activated. When a new terminal is opened the virtual environment is not activated by default on it.
 
 ### Testing
 
