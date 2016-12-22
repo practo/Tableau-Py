@@ -3,10 +3,6 @@
 This module defines xml content handlers for parsing tableau files into
 python objects
 
-Content Handlers
-----------------
-    - `TDSContentHandler`
-
 """
 
 from __future__ import absolute_import, unicode_literals
