@@ -8,6 +8,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import os
 
 from pathlib2 import Path
+from tableausdk.Types import Type
 import lxml.etree as etree
 
 
@@ -24,6 +25,16 @@ class TDSReader(object):
     """
 
     _parser = etree.XMLParser(remove_blank_text=True, remove_comments=True)
+    _type_map = {
+        'boolean': Type.BOOLEAN,
+        'string': Type.CHAR_STRING,
+        'date': Type.DATE,
+        'datetime': Type.DATETIME,
+        'integer': Type.INTEGER,
+        'double': Type.DOUBLE,
+        'duration': Type.DURATION,
+        'unicode_string': Type.UNICODE_STRING,
+    }
 
     def __init__(self, xml_content_handler):
         super(TDSReader, self).__init__()

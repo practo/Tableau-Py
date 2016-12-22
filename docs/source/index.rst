@@ -20,6 +20,13 @@ Contents:
    :members: Element, XPath, XMLParser, XMLSchemaParseError
    :undoc-members:
 
+:mod:`tableausdk.Types` -- Tableau Types
+----------------------------------------
+.. automodule:: tableausdk.Types
+   :members: Type
+   :undoc-members:
+   :show-inheritance:
+
 
 Indices and tables
 ==================
