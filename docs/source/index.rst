@@ -13,7 +13,6 @@ Contents:
 
    modules
 
-
 :mod:`lxml.etree` -- XML Element Tree parser
 --------------------------------------------
 .. automodule:: lxml.etree
