@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 This module defines xml content handlers for parsing tableau files into
-python obects
-
-Content Handlers
-----------------
-    - `TDSContentHandler`
+python objects
 
 """
 

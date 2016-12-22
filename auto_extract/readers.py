@@ -2,10 +2,6 @@
 """
 This module defines xml readers for tableau files
 
-Readers
--------
-    - `TDSReader`
-
 """
 
 from __future__ import absolute_import, print_function, unicode_literals
@@ -35,16 +31,16 @@ class TDSReader(object):
 
     def define_table(self):
         """
-        Creates a `TableauDefinition` object from the column information returned after parsing
+        Creates a TableDefinition object from the column information returned after parsing
         the tableau datasource file
 
         Returns
         -------
-        :py:exc:`~tableausdk.Extract.TableauDefinition`
+        :tableausdk:`TableDefinition <classtableausdk_1_1_extract_1_1_table_definition>`
 
         Raises
         ------
-        :py:exc:`~tableausdk.Exceptions.TableauException`
+        :tableausdk:`TableauException <classtableausdk_1_1_exceptions_1_1_tableau_exception>`
 
         """
         pass
@@ -105,7 +101,7 @@ class TDSReader(object):
 
         Raises
         ------
-        :py:exc:`IOError`
+        OSError
             when `tds_file` is not readable
         :py:exc:`~lxml.etree.XMLSchemaParseError`
             when `tds_file` is not xml parsable
