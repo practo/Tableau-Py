@@ -40,11 +40,11 @@ class TDSReader(object):
 
         Returns
         -------
-        :py:obj:`~tableausdk.Extract.TableDefinition`
+        :tableausdk:`TableDefinition <classtableausdk_1_1_extract_1_1_table_definition>`
 
         Raises
         ------
-        :py:exc:`~tableausdk.Exceptions.TableauException`
+        :tableausdk:`TableauException <classtableausdk_1_1_exceptions_1_1_tableau_exception>`
 
         """
         pass
