@@ -111,3 +111,9 @@ class XmlDictConfig(dict):
             # the text directly as value
             else:
                 self.update({element.tag: element.text})
+
+
+if __name__ == '__main__':
+    import doctest
+
+    doctest.testmod()
