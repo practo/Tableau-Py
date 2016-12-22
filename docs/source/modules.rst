@@ -1,4 +1,4 @@
-auto_extract
+Auto Extract
 ============
 
 .. toctree::
