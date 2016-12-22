@@ -4,24 +4,24 @@ auto_extract package
 Submodules
 ----------
 
-auto_extract.content_handlers module
-------------------------------------
+:mod:`auto_extract.content_handlers` -- Content Handlers
+--------------------------------------------------------
 
 .. automodule:: auto_extract.content_handlers
     :members:
     :undoc-members:
     :show-inheritance:
 
-auto_extract.readers module
----------------------------
+:mod:`auto_extract.readers` -- Readers
+--------------------------------------
 
 .. automodule:: auto_extract.readers
     :members:
     :undoc-members:
     :show-inheritance:
 
-auto_extract.xml_as_dictionary module
--------------------------------------
+:mod:`auto_extract.xml_as_dictionary` -- XML As Dictionary
+----------------------------------------------------------
 
 .. automodule:: auto_extract.xml_as_dictionary
     :members:
