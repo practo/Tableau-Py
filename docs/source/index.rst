@@ -23,7 +23,7 @@ Contents:
 :mod:`tableausdk.Types` -- Tableau Types
 ----------------------------------------
 .. automodule:: tableausdk.Types
-   :members: Type
+   :members: Type, Collation
    :undoc-members:
    :show-inheritance:
 

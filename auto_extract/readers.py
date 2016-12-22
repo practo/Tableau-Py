@@ -8,7 +8,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 import os
 
 from pathlib2 import Path
-from tableausdk.Types import Type
+from tableausdk.Types import Type, Collation
+from tableausdk.Extract import TableDefinition
 import lxml.etree as etree
 
 
@@ -40,10 +41,14 @@ class TDSReader(object):
         super(TDSReader, self).__init__()
         self._xml_content_handler = xml_content_handler
 
-    def define_table(self):
+    def define_table(self, collation=Collation.EN_US_CI):
         """
         Creates a TableDefinition object from the column information returned after parsing
         the tableau datasource file
+
+        Other Parameters
+        ----------------
+        collation : :py:attr:`~tableausdk.Types.Collation`
 
         Returns
         -------
@@ -53,8 +58,36 @@ class TDSReader(object):
         ------
         :tableausdk:`TableauException <classtableausdk_1_1_exceptions_1_1_tableau_exception>`
 
+        Examples
+        --------
+        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> tds_content_handler = TDSContentHandler()
+        >>> tds_reader = TDSReader(tds_content_handler)
+        >>> tds_reader.read('sample/sample.tds')
+        >>> tds_reader.define_table().getColumnCount()
+        9
+
         """
-        pass
+        table_definition = TableDefinition()
+        column_map = self.get_datasource_columns()
+
+        table_definition.setDefaultCollation(collation)
+
+        for i, column in enumerate(column_map, start=1):
+            parent_name = column.get('parent-name')
+            local_name = column.get('local-name')
+            local_type = column.get('local-type')
+
+            assert parent_name is not None, 'parent-name is None at: {}:\n'.format(i) + str(column)
+            assert local_name is not None, 'local-name is None at: {}:\n'.format(i) + str(column)
+            assert local_type is not None, 'local-type is None at: {}:\n'.format(i) + str(column)
+
+            column_name = '{}.{}'.format(parent_name, local_name)
+            column_type = self._type_map.get(local_type, self._type_map['unicode_string'])
+
+            table_definition.addColumn(column_name, column_type)
+
+        return table_definition
 
     def get_datasource_columns(self):
         """
