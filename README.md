@@ -1,9 +1,8 @@
-# auto_extract
+# Tableau-Py
 
-[![Build Status](https://travis-ci.org/anuragagarwal561994/auto_extract.svg?branch=master)](https://travis-ci.org/anuragagarwal561994/auto_extract)
-[![codecov.io](https://codecov.io/github/hbetts/orbitalpy/coverage.svg?branch=master)](https://codecov.io/github/anuragagarwal561994/auto_extract?branch=master)
+[![Build Status](https://travis-ci.org/practo/Tableau-Py.svg?branch=master)](https://travis-ci.org/practo/Tableau-Py)
 
-About this project...
+Tableau-Py is a library containing set of tools for manipulating and extracting information from [tableau](http://tableau.com) generated files.
 
 ## Installation
 
