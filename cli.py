@@ -17,9 +17,11 @@ import click
 
 
 @click.command(name='auto_extract')
+@click.option('-s', '--suffix', default='', help='Adds suffix to generated file names')
+@click.option('-p', '--prefix', default='', help='Adds prefix to generated file names')
 @click.option('--overwrite', is_flag=True, help='To overwrite already existing .tde files')
 @click.argument('files', nargs=-1, type=click.Path())
-def main(files, overwrite):
+def main(files, overwrite, prefix, suffix):
     """
     The script creates tableau datasource extracts corresponding
     to input tableau datasource `FILES`.
@@ -46,7 +48,8 @@ def main(files, overwrite):
             if absolute_path in tde_success_map:
                 continue
 
-            tde_path = Path(file_name).with_suffix('.tde')
+            tds_path = Path(file_name)
+            tde_path = tds_path.with_name(prefix + tds_path.stem + suffix).with_suffix('.tde')
 
             if overwrite and tde_path.exists():
                 tde_path.unlink()

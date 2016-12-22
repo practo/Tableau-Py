@@ -17,3 +17,9 @@ or with overwrite option
 ::
 
     $ auto_extract --overwrite *.tds
+
+Add static suffix or prefix to generated files
+
+::
+
+    $ auto_extract --prefix TDE_ --suffix _SUFFIX *.tds
