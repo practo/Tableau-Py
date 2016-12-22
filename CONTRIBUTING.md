@@ -18,26 +18,45 @@ To update the project from within the project's folder you can run the following
 git pull --rebase
 ```
 
+Install pre-commit cli:
+
+```bash
+pip install pre-commit
+```
+
 ### Building
+
+Install [pre-commit](http://pre-commit.com) hooks
+
+```bash
+pre-commit install
+```
+
+This will create automatically create a virtual env `py_env-default`
 
 Install the project's dependencies.
 
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
+python setup.py install_dependencies
 ```
+
+Last command will install external dependency ([TableauSDK](https://onlinehelp.tableau.com/current/api/sdk/en-us/SDK/tableau_sdk_installing.htm)) for this project looking for supported platform and architecture.
 
 ### Testing
 
-Install the project's dependencies.
-
 ```bash
+tox
 ```
 
-Next, run the project's tests.
+For running test for all environments or
 
 ```bash
+tox -e <env_name>
 ```
+
+to run for a specific environment.
 
 ## Feature Requests
 
