@@ -99,7 +99,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'auto_extract = cli:main'
+            'auto_extract = auto_extract.cli:main'
         ]
     },
     install_requires=[
