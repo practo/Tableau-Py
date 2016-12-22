@@ -1,16 +1,16 @@
 language: python
-env:
-  - TOXENV=py27
-  - TOXENV=py34
-  - TOXENV=py35
-  - TOXENV=pypy
-  - TOXENV=lint
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - pypy
+cache: pip
 install:
-  - pip install -r requirements-dev.txt
+  - pip install tox-travis
 matrix:
   fast_finish: true
 script:
-  - python setup.py test
+  - tox
 after_success:
   - curl -Lo travis_after_all.py https://git.io/travis_after_all
   - python travis_after_all.py
