@@ -34,6 +34,25 @@ if tableau_sdk is None:
     raise Exception('Not compatible system')
 
 
+class TableauSDKInstall(Command):
+    """
+    Installs TableauSDK.
+    """
+
+    description = 'Installs tableausdk according to the platform and architecture.'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import pip
+        pip.main((['install', tableau_sdk]))
+
+
 class Coverage(Command):
     """
     Coverage setup.
@@ -76,6 +95,7 @@ setup(
     download_url='',
     cmdclass={
         'coverage': Coverage,
+        'install_dependencies': TableauSDKInstall,
     },
     install_requires=[
         'lxml',
