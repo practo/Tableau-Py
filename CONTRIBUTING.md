@@ -23,12 +23,12 @@ git pull --rebase
 Install the project's dependencies.
 
 ```bash
-$ pip install -r requirements.txt       #library requirements
+$ virtualenv venv                       # create a virtual environment
+$ . venv/bin/activate                   # activate created virtual environment
+$ pip install -r requirements.txt       # library requirements
 $ pip install -r requirements-dev.txt   # dev requirements
 $ python setup.py install_dependencies  # external dependencies (tableau sdk)
 $ pre-commit install                    # install a pre-commit hook in .git repository
-$ virtualenv venv                       # create a virtual environment
-$ . venv/bin/activate                   # activate created virtual environment
 ```
 
 **Notes**:
