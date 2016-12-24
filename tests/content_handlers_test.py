@@ -191,6 +191,36 @@ class TestTDSContentHandler(unittest.TestCase):
         except AssertionError:
             self.fail('parse() raised AssertionError unexpectedly')
 
+    def test_parse_stale_value(self):
+        """
+        Asserts:
+            * metadata property when already containting values after error remains same
+            * column definition property when already containing values after error remains same
+
+        """
+        tds_xml = etree.parse('sample/sample.tds').getroot()
+
+        try:
+            self.content_handler.parse(tds_xml)
+        except AssertionError:
+            self.fail('parse() raised AssertionError unexpectedly')
+
+        metadata = self.content_handler.metadata
+        column_definitions = self.content_handler.column_definitions
+
+        tds_xml = etree.Element('element')
+
+        with self.assertRaises(AssertionError):
+            self.content_handler.parse(tds_xml)
+
+        self.assertIsNotNone(metadata)
+        self.assertIsInstance(metadata, dict)
+        self.assertDictEqual(metadata, self.content_handler.metadata)
+
+        self.assertIsNotNone(column_definitions)
+        self.assertIsInstance(column_definitions, list)
+        self.assertListEqual(column_definitions, self.content_handler.column_definitions)
+
 
 if __name__ == '__main__':
     unittest.main()
