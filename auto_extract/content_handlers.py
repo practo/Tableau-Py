@@ -26,9 +26,9 @@ class TDSContentHandler(object):
         self._tds_columns = list()
 
     @property
-    def columns(self):
+    def column_definitions(self):
         """
-        Information of columns within parsed tableau datasource
+        Column definition parsed tableau datasource
 
         Returns
         -------
@@ -39,13 +39,8 @@ class TDSContentHandler(object):
                 {
                     'local-name': local name of column,
                     'parent-name': name of the table containing column
-                    'remote-name': name of column in `parent-name`,
                     'local-type': local data type of column,
-                    'aggregation': column aggregated on,
-                    'contains-null': if column contains null values
-                    ...
                 }
-
 
         Examples
         --------
@@ -53,74 +48,24 @@ class TDSContentHandler(object):
         >>> datasource = etree.parse('sample/sample.tds').getroot()
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_content_handler.parse(datasource)
-        >>> tds_content_handler.columns[:2] == [{
-        ...     'ordinal': '1',
+        >>> tds_content_handler.column_definitions[:2] == [{
         ...     'parent-name': '[TABLE_NAME]',
-        ...     'remote-type': '7',
-        ...     'aggregation': 'Year',
-        ...     'remote-alias': 'REMOTE_ALIAS1',
-        ...     'remote-name': 'REMOTE_COLUMN_NAME1',
-        ...      'attributes': {
-        ...          'attribute': [{
-        ...             'datatype': 'string',
-        ...             'name': 'DebugRemoteType',
-        ...             '_text': '"SQL_TYPE_DATE"'
-        ...           },
-        ...           {
-        ...             'datatype': 'string',
-        ...             'name': 'DebugWireType',
-        ...             '_text': '"SQL_C_TYPE_DATE"'
-        ...           },
-        ...           {
-        ...             'datatype': 'boolean',
-        ...             'name': 'TypeIsDateTime2orDate',
-        ...             '_text': 'true'
-        ...           }]
-        ...      },
         ...     'local-name': '[LOCAL_COLUMN_NAME1]',
         ...     'local-type': 'date',
-        ...     'class': 'column',
-        ...     'contains-null': 'true'
         ... },
         ... {
-        ...      'ordinal': '2',
         ...      'parent-name': '[TABLE_NAME]',
-        ...      'remote-type': '130',
-        ...      'padded-semantics': 'true',
-        ...      'aggregation': 'Count',
-        ...      'remote-alias': 'REMOTE_ALIAS2',
-        ...      'width': '100',
-        ...      'remote-name': 'REMOTE_COLUMN_NAME2',
-        ...      'attributes': {
-        ...          'attribute': [{
-        ...             'datatype': 'string',
-        ...             'name': 'DebugRemoteType',
-        ...             '_text': '"SQL_WVARCHAR"',
-        ...           },
-        ...           {
-        ...             'datatype': 'string',
-        ...             'name': 'DebugWireType',
-        ...             '_text': '"SQL_C_WCHAR"',
-        ...           },
-        ...           {
-        ...             'datatype': 'string',
-        ...             'name': 'TypeIsVarchar',
-        ...             '_text': '"true"',
-        ...           }]
-        ...      },
-        ...      'collation': {
-        ...          'flag': '2147483649',
-        ...          'name': 'LEN_RUS_S2_VWIN'
-        ...      },
         ...      'local-name': '[LOCAL_COLUMN_NAME2]',
         ...      'local-type': 'string',
-        ...      'class': 'column',
-        ...      'contains-null': 'true'
         ... }]
         True
 
         """
-        return self._tds_columns
+        return map(lambda x: {
+            'parent-name': x.get('parent-name'),
+            'local-name': x.get('local-name'),
+            'local-type': x.get('local-type')
+        }, self._tds_columns)
 
     @property
     def metadata(self):

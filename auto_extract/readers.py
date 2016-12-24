@@ -69,18 +69,18 @@ class TDSReader(object):
 
         """
         table_definition = TableDefinition()
-        column_map = self.get_datasource_columns()
+        column_definitions = self.get_datasource_column_defs()
 
         table_definition.setDefaultCollation(collation)
 
-        for i, column in enumerate(column_map, start=1):
-            parent_name = column.get('parent-name')
-            local_name = column.get('local-name')
-            local_type = column.get('local-type')
+        for i, definition in enumerate(column_definitions, start=1):
+            parent_name = definition.get('parent-name')
+            local_name = definition.get('local-name')
+            local_type = definition.get('local-type')
 
-            assert parent_name is not None, 'parent-name is None at: {}:\n'.format(i) + str(column)
-            assert local_name is not None, 'local-name is None at: {}:\n'.format(i) + str(column)
-            assert local_type is not None, 'local-type is None at: {}:\n'.format(i) + str(column)
+            assert parent_name is not None, 'parent-name is None at: {}:\n'.format(i) + str(definition)
+            assert local_name is not None, 'local-name is None at: {}:\n'.format(i) + str(definition)
+            assert local_type is not None, 'local-type is None at: {}:\n'.format(i) + str(definition)
 
             column_name = '{}.{}'.format(parent_name, local_name)
             column_type = self._type_map.get(local_type, self._type_map['unicode_string'])
@@ -89,13 +89,13 @@ class TDSReader(object):
 
         return table_definition
 
-    def get_datasource_columns(self):
+    def get_datasource_column_defs(self):
         """
         Returns read tableau datasource column information
 
         Returns
         -------
-        TDSContentHandler.columns
+        TDSContentHandler.column_definitions
 
         Examples
         --------
@@ -103,13 +103,13 @@ class TDSReader(object):
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
-        >>> tds_reader.get_datasource_columns() == tds_content_handler.columns
+        >>> tds_reader.get_datasource_column_defs() == tds_content_handler.column_definitions
         True
 
         """
         tds_content = self._xml_content_handler
 
-        return tds_content.columns
+        return tds_content.column_definitions
 
     def get_datasource_metadata(self):
         """
