@@ -254,6 +254,42 @@ class TestTDSContentHandler(unittest.TestCase):
             expected_result = yaml.load(stream)
             self.assertDictEqual(metadata, expected_result)
 
+    def test_column_definitions(self):
+        """
+        Asserts:
+            * Column Definitions is not None after parse
+            * Column Definitions is instance of list after parse
+            * Column Definitions has expected length equal to column length in datasource
+            * Column Definitions each element is a dict
+            * Column Definitions each element has 3 keys namely local-name, parent-name, local-type
+            * Column Definitions each element each key value is instance of str
+            * Column Definitions value is equal to expected value
+
+        """
+        tds_xml = etree.parse('sample/sample.tds').getroot()
+        self.content_handler.parse(tds_xml)
+
+        column_definitions = self.content_handler.column_definitions
+
+        self.assertIsNotNone(column_definitions)
+        self.assertIsInstance(column_definitions, list)
+        self.assertEqual(len(column_definitions), 9)
+
+        for definition in column_definitions:
+            self.assertIsInstance(definition, dict)
+
+            self.assertTrue(definition.has_key('local-name'))
+            self.assertTrue(definition.has_key('parent-name'))
+            self.assertTrue(definition.has_key('local-type'))
+
+            self.assertIsInstance(definition['local-name'], str)
+            self.assertIsInstance(definition['parent-name'], str)
+            self.assertIsInstance(definition['local-type'], str)
+
+        with open('tests/resources/sample-datasource-column-definitions.yaml', 'r') as stream:
+            expected_result = yaml.load(stream)
+            self.assertListEqual(column_definitions, expected_result)
+
 
 if __name__ == '__main__':
     unittest.main()
