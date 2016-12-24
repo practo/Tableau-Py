@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Unit Test Cases for readers modules
+Unit Test Cases for readers module
 
 Classes:
 
