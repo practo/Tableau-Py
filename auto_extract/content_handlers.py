@@ -123,8 +123,6 @@ class TDSContentHandler(object):
         """
         self._tds_metadata['datasource'] = dict(tds_xml.attrib)
 
-        assert isinstance(self._tds_metadata['datasource'], dict), \
-            'datasource information is not dict'
         assert len(self._tds_metadata['datasource']) != 0, 'datasource information is empty'
 
         connection_path = 'connection/named-connections/named-connection/connection'
@@ -145,8 +143,6 @@ class TDSContentHandler(object):
         # like class instance but not dictionary
         self._tds_metadata['connection'] = dict(connections[0])
 
-        assert isinstance(self._tds_metadata['connection'], dict), \
-            'connection information is not dict'
         assert len(self._tds_metadata['connection']) != 0, 'connection information is empty'
 
         metadata_record_path = 'connection/metadata-records/metadata-record'
