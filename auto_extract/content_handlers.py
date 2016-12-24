@@ -26,9 +26,9 @@ class TDSContentHandler(object):
         self._tds_columns = list()
 
     @property
-    def columns(self):
+    def column_definitions(self):
         """
-        Information of columns within parsed tableau datasource
+        Column definition parsed tableau datasource
 
         Returns
         -------
@@ -39,13 +39,8 @@ class TDSContentHandler(object):
                 {
                     'local-name': local name of column,
                     'parent-name': name of the table containing column
-                    'remote-name': name of column in `parent-name`,
                     'local-type': local data type of column,
-                    'aggregation': column aggregated on,
-                    'contains-null': if column contains null values
-                    ...
                 }
-
 
         Examples
         --------
@@ -53,74 +48,24 @@ class TDSContentHandler(object):
         >>> datasource = etree.parse('sample/sample.tds').getroot()
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_content_handler.parse(datasource)
-        >>> tds_content_handler.columns[:2] == [{
-        ...     'ordinal': '1',
+        >>> tds_content_handler.column_definitions[:2] == [{
         ...     'parent-name': '[TABLE_NAME]',
-        ...     'remote-type': '7',
-        ...     'aggregation': 'Year',
-        ...     'remote-alias': 'REMOTE_ALIAS1',
-        ...     'remote-name': 'REMOTE_COLUMN_NAME1',
-        ...      'attributes': {
-        ...          'attribute': [{
-        ...             'datatype': 'string',
-        ...             'name': 'DebugRemoteType',
-        ...             '_text': '"SQL_TYPE_DATE"'
-        ...           },
-        ...           {
-        ...             'datatype': 'string',
-        ...             'name': 'DebugWireType',
-        ...             '_text': '"SQL_C_TYPE_DATE"'
-        ...           },
-        ...           {
-        ...             'datatype': 'boolean',
-        ...             'name': 'TypeIsDateTime2orDate',
-        ...             '_text': 'true'
-        ...           }]
-        ...      },
         ...     'local-name': '[LOCAL_COLUMN_NAME1]',
         ...     'local-type': 'date',
-        ...     'class': 'column',
-        ...     'contains-null': 'true'
         ... },
         ... {
-        ...      'ordinal': '2',
         ...      'parent-name': '[TABLE_NAME]',
-        ...      'remote-type': '130',
-        ...      'padded-semantics': 'true',
-        ...      'aggregation': 'Count',
-        ...      'remote-alias': 'REMOTE_ALIAS2',
-        ...      'width': '100',
-        ...      'remote-name': 'REMOTE_COLUMN_NAME2',
-        ...      'attributes': {
-        ...          'attribute': [{
-        ...             'datatype': 'string',
-        ...             'name': 'DebugRemoteType',
-        ...             '_text': '"SQL_WVARCHAR"',
-        ...           },
-        ...           {
-        ...             'datatype': 'string',
-        ...             'name': 'DebugWireType',
-        ...             '_text': '"SQL_C_WCHAR"',
-        ...           },
-        ...           {
-        ...             'datatype': 'string',
-        ...             'name': 'TypeIsVarchar',
-        ...             '_text': '"true"',
-        ...           }]
-        ...      },
-        ...      'collation': {
-        ...          'flag': '2147483649',
-        ...          'name': 'LEN_RUS_S2_VWIN'
-        ...      },
         ...      'local-name': '[LOCAL_COLUMN_NAME2]',
         ...      'local-type': 'string',
-        ...      'class': 'column',
-        ...      'contains-null': 'true'
         ... }]
         True
 
         """
-        return self._tds_columns
+        return map(lambda x: {
+            'parent-name': x.get('parent-name'),
+            'local-name': x.get('local-name'),
+            'local-type': x.get('local-type')
+        }, self._tds_columns)
 
     @property
     def metadata(self):
@@ -176,45 +121,38 @@ class TDSContentHandler(object):
             element tree representing a tableau datasource
 
         """
-        self._tds_metadata['datasource'] = tds_xml.attrib
+        self._tds_metadata['datasource'] = dict(tds_xml.attrib)
 
-        connection = tds_xml.find('connection')
-        connection_object = XmlDictConfig(connection)
+        assert isinstance(self._tds_metadata['datasource'], dict), \
+            'datasource information is not dict'
+        assert len(self._tds_metadata['datasource']) != 0, 'datasource information is empty'
 
-        named_connections = connection_object.get('named-connections')
+        connection_path = 'connection/named-connections/named-connection/connection'
+        connections = list()
 
-        assert named_connections is not None, 'named-connections does not exists'
+        for connection in tds_xml.iterfind(connection_path):
+            connections.append(connection.attrib)
 
-        named_connection = named_connections.get('named-connection')
+        assert len(connections) <= 1, \
+            'unexpected number of connections %r, in datasource' % len(connections)
 
-        assert named_connection is not None, 'named-connection does not exist'
-        assert isinstance(named_connection, dict), 'named-connection is not an instance of dict'
+        if len(connections) == 0:
+            self._tds_metadata['connection'] = dict()
+            self._tds_columns = list()
+            return
 
-        self._tds_metadata['connection'] = named_connection.get('connection')
+        # dict because the lxml.etree.Element.attrib represents a dictionary
+        # like class instance but not dictionary
+        self._tds_metadata['connection'] = dict(connections[0])
 
-        assert self._tds_metadata['connection'] is not None, 'connection information is none'
         assert isinstance(self._tds_metadata['connection'], dict), \
             'connection information is not dict'
         assert len(self._tds_metadata['connection']) != 0, 'connection information is empty'
 
-        metadata_records = connection_object.get('metadata-records')
+        metadata_record_path = 'connection/metadata-records/metadata-record'
 
-        if metadata_records is None:
-            self._tds_columns = list()
-            return
-
-        assert isinstance(metadata_records, dict), 'metadata-records is not dict'
-
-        self._tds_columns = metadata_records.get('metadata-record')
-
-        assert self._tds_columns is not None, 'no tag metadata-record exists'
-
-        # when only one column information is returned it will be in form of dict
-        # thus we need to convert it into list
-        if isinstance(self._tds_columns, dict):
-            self._tds_columns = [self._tds_columns]
-
-        assert isinstance(self._tds_columns, list), 'tds_columns not a list'
+        for metadata_record in tds_xml.iterfind(metadata_record_path):
+            self._tds_columns.append(XmlDictConfig(metadata_record))
 
 
 if __name__ == '__main__':
