@@ -1,0 +1,36 @@
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME1]'
+    local-type: date
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME2]'
+    local-type: string
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME3]'
+    local-type: string
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME4]'
+    local-type: string
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME5]'
+    local-type: string
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME6]'
+    local-type: string
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME7]'
+    local-type: string
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME8]'
+    local-type: string
+-
+    parent-name: '[TABLE_NAME]'
+    local-name: '[LOCAL_COLUMN_NAME9]'
+    local-type: string
