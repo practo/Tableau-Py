@@ -32,10 +32,29 @@ class TestTDSContentHandler(unittest.TestCase):
     def _check_error(self, tds_xml, regex_match):
         """
         Checks if parsing `tds_xml` gives assertion error matching `regex_match`
+        Further assertions are used to check if there is any stale information being,
+        stored in the method properties
+
+        Asserts:
+            * Raises given error
+            * If after raise metadata property is not None
+            * If after raise metadata property is an instance of dict
+            * If after raise metadata property is empty dict
+            * If after raise column_definitions property is not None
+            * If after raise column_definitions property is an instance of list
+            * If after raise column_definitions property is empty list
 
         """
         with self.assertRaisesRegexp(AssertionError, regex_match):
             self.content_handler.parse(tds_xml)
+
+        self.assertIsNotNone(self.content_handler.metadata)
+        self.assertIsInstance(self.content_handler.metadata, dict)
+        self.assertEqual(self.content_handler.metadata, {})
+
+        self.assertIsNotNone(self.content_handler.column_definitions)
+        self.assertIsInstance(self.content_handler.column_definitions, list)
+        self.assertEqual(self.content_handler.column_definitions, [])
 
     def _fail_on_missing_datasource_information(self, tds_xml):  # pylint: disable=locally-disabled,invalid-name
         """
