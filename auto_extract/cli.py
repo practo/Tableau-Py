@@ -17,11 +17,12 @@ import click
 
 
 @click.command(name='auto_extract')
+@click.option('-o', '--output-dir', type=click.Path(), help='Output directory for generated files')
 @click.option('-s', '--suffix', default='', help='Adds suffix to generated file names')
 @click.option('-p', '--prefix', default='', help='Adds prefix to generated file names')
 @click.option('--overwrite', is_flag=True, help='To overwrite already existing .tde files')
 @click.argument('files', nargs=-1, type=click.Path())
-def main(files, overwrite, prefix, suffix):
+def main(files, overwrite, prefix, suffix, output_dir):
     """
     The script creates tableau datasource extracts corresponding
     to input tableau datasource `FILES`.
@@ -40,6 +41,10 @@ def main(files, overwrite, prefix, suffix):
     tde_success_map = dict()
 
     cols = _compute_cols(files)
+    absolute_output_dir = None
+
+    if output_dir is not None:
+        absolute_output_dir = Path(output_dir).resolve()
 
     with click.progressbar(files, label='Processing datasource files') as file_names:
         for file_name in file_names:
@@ -50,6 +55,9 @@ def main(files, overwrite, prefix, suffix):
 
             tds_path = Path(file_name)
             tde_path = tds_path.with_name(prefix + tds_path.stem + suffix).with_suffix('.tde')
+
+            if absolute_output_dir is not None:
+                tde_path = absolute_output_dir / tde_path.name
 
             if overwrite and tde_path.exists():
                 tde_path.unlink()
