@@ -131,13 +131,8 @@ class TDSContentHandler(object):
         for connection in tds_xml.iterfind(connection_path):
             connections.append(connection.attrib)
 
-        assert len(connections) <= 1, \
-            'unexpected number of connections %r, in datasource' % len(connections)
-
-        if len(connections) == 0:
-            self._tds_metadata['connection'] = dict()
-            self._tds_columns = list()
-            return
+        assert len(connections) == 1, \
+            'expected number of connections to be {}, got {}'.format(1, len(connections))
 
         # dict because the lxml.etree.Element.attrib represents a dictionary
         # like class instance but not dictionary
