@@ -178,43 +178,32 @@ class TDSContentHandler(object):
         """
         self._tds_metadata['datasource'] = tds_xml.attrib
 
-        connection = tds_xml.find('connection')
-        connection_object = XmlDictConfig(connection)
+        connection_path = 'connection/named-connections/named-connection/connection'
+        connections = list()
 
-        named_connections = connection_object.get('named-connections')
+        for connection in tds_xml.iterfind(connection_path):
+            connections.append(connection.attrib)
 
-        assert named_connections is not None, 'named-connections does not exists'
+        assert len(connections) <= 1, \
+            'unexpected number of connections %r, in datasource' % len(connections)
 
-        named_connection = named_connections.get('named-connection')
+        if len(connections) == 0:
+            self._tds_metadata['connection'] = dict()
+            self._tds_columns = list()
+            return
 
-        assert named_connection is not None, 'named-connection does not exist'
-        assert isinstance(named_connection, dict), 'named-connection is not an instance of dict'
+        # dict because the lxml.etree.Element.attrib represents a dictionary
+        # like class instance but not dictionary
+        self._tds_metadata['connection'] = dict(connections[0])
 
-        self._tds_metadata['connection'] = named_connection.get('connection')
-
-        assert self._tds_metadata['connection'] is not None, 'connection information is none'
         assert isinstance(self._tds_metadata['connection'], dict), \
             'connection information is not dict'
         assert len(self._tds_metadata['connection']) != 0, 'connection information is empty'
 
-        metadata_records = connection_object.get('metadata-records')
+        metadata_record_path = 'connection/metadata-records/metadata-record'
 
-        if metadata_records is None:
-            self._tds_columns = list()
-            return
-
-        assert isinstance(metadata_records, dict), 'metadata-records is not dict'
-
-        self._tds_columns = metadata_records.get('metadata-record')
-
-        assert self._tds_columns is not None, 'no tag metadata-record exists'
-
-        # when only one column information is returned it will be in form of dict
-        # thus we need to convert it into list
-        if isinstance(self._tds_columns, dict):
-            self._tds_columns = [self._tds_columns]
-
-        assert isinstance(self._tds_columns, list), 'tds_columns not a list'
+        for metadata_record in tds_xml.iterfind(metadata_record_path):
+            self._tds_columns.append(XmlDictConfig(metadata_record))
 
 
 if __name__ == '__main__':
