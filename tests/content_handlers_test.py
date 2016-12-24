@@ -12,6 +12,7 @@ from __future__ import absolute_import
 
 import unittest
 from copy import deepcopy
+import yaml
 from auto_extract.content_handlers import TDSContentHandler
 import lxml.etree as etree
 
@@ -220,6 +221,38 @@ class TestTDSContentHandler(unittest.TestCase):
         self.assertIsNotNone(column_definitions)
         self.assertIsInstance(column_definitions, list)
         self.assertListEqual(column_definitions, self.content_handler.column_definitions)
+
+    def test_metadata(self):
+        """
+        Asserts:
+            * Metadata is not None after parse
+            * Metadata is instance of dict after parse
+            * Metadata has 2 keys: datasource and connection after parse
+            * Metadata:datasource and Metadata:connection are instances of dict after parse
+            * Metadata:datasource and Metadata:connection are not empty after parse
+            * Metadata information is equal to expected value after parse
+
+        """
+        tds_xml = etree.parse('sample/sample.tds').getroot()
+        self.content_handler.parse(tds_xml)
+
+        metadata = self.content_handler.metadata
+
+        self.assertIsNotNone(metadata)
+        self.assertIsInstance(metadata, dict)
+        self.assertEqual(len(metadata), 2)
+
+        self.assertTrue(metadata.has_key('datasource'))
+        self.assertIsInstance(metadata['datasource'], dict)
+        self.assertFalse(len(metadata['datasource']) == 0)
+
+        self.assertTrue(metadata.has_key('connection'))
+        self.assertIsInstance(metadata['connection'], dict)
+        self.assertFalse(len(metadata['connection']) == 0)
+
+        with open('tests/resources/sample-datasource-metadata-definition.yaml', 'r') as stream:
+            expected_result = yaml.load(stream)
+            self.assertDictEqual(metadata, expected_result)
 
 
 if __name__ == '__main__':
