@@ -176,7 +176,11 @@ class TDSContentHandler(object):
             element tree representing a tableau datasource
 
         """
-        self._tds_metadata['datasource'] = tds_xml.attrib
+        self._tds_metadata['datasource'] = dict(tds_xml.attrib)
+
+        assert isinstance(self._tds_metadata['datasource'], dict), \
+            'datasource information is not dict'
+        assert len(self._tds_metadata['datasource']) != 0, 'datasource information is empty'
 
         connection_path = 'connection/named-connections/named-connection/connection'
         connections = list()
