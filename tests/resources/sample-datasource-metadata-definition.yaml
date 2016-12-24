@@ -1,0 +1,12 @@
+datasource:
+    formatted-name: 'Datasource Example'
+    inline: 'true'
+connection:
+    authentication: sqlserver
+    class: sqlserver
+    dbname: DATABASE_NAME
+    minimum-driver-version: 'SQL Server Native Client 10.0'
+    odbc-native-protocol: 'yes'
+    one-time-sql: ''
+    server: 0.0.0.0
+    username: username
