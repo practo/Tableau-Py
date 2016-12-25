@@ -159,7 +159,7 @@ class TDSReader(object):
         >>> tds_reader.read('some random file') #doctest: +ELLIPSIS
         Traceback (most recent call last):
             ...
-        OSError: [Errno 2] No such file or directory: '.../some random file'
+        IOError: does not exists
 
         >>> from auto_extract.content_handlers import TDSContentHandler
         >>> tds_content_handler = TDSContentHandler()
@@ -171,10 +171,11 @@ class TDSReader(object):
 
         """
         tds_file_path = Path(tds_file)
-        absolute_path = str(tds_file_path.resolve())
 
         if not tds_file_path.exists():
             raise IOError('does not exists')
+
+        absolute_path = str(tds_file_path.resolve())
 
         if not tds_file_path.is_file():
             raise IOError('not a file')

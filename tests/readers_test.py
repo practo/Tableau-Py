@@ -34,13 +34,13 @@ class TestTDSReader(unittest.TestCase):
     def test_read(self):
         """
         Asserts:
-            * Raises OSError for missing file / directory
+            * Raises IOError for missing file / directory
             * Raises IOError when file expected but folder or something other
               than file given
             * Raises IOError when file given does not have .tds extension in name
 
         """
-        with self.assertRaisesRegexp(OSError, 'No such file or directory'):
+        with self.assertRaisesRegexp(IOError, 'does not exists'):
             self.reader.read('sample/random file.tds')
 
         with self.assertRaisesRegexp(IOError, '^not a file$'):
