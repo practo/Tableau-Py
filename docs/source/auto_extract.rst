@@ -28,6 +28,12 @@ Submodules
     :undoc-members:
     :show-inheritance:
 
+:mod:`auto_extract.exceptions` -- Exceptions
+--------------------------------------------
+
+.. automodule:: auto_extract.exceptions
+    :members:
+    :undoc-members:
 
 Module contents
 ---------------
