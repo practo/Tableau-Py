@@ -11,6 +11,7 @@ import os
 import re
 
 from click.testing import CliRunner
+from auto_extract.exceptions import AutoExtractException
 from auto_extract.cli import main
 
 RUNNER = CliRunner()
@@ -141,3 +142,37 @@ def test_with_multiple_files():
     assert os.path.exists('sample1.tde')
     assert len(SUCCESS_PATTERN.findall(result.output)) == 2
     assert len(FAILED_PATTERN.findall(result.output)) == 0
+
+
+@isolated_filesystem
+def test_with_multiple_calls_without_overwrite():  # pylint: disable=locally-disabled,invalid-name
+    """
+    Asserts:
+        * If tde already exists with same table name give error
+        * Progress text is displayed
+        * Error Message and Failed object
+        * Failed is printed
+        * Success is not printed
+
+    """
+    RUNNER.invoke(main, ['sample.tds'])
+    result = RUNNER.invoke(main, ['sample.tds'])
+    assert result.exit_code == -1
+    assert isinstance(result.exception, AutoExtractException)
+    assert result.output.index(INITIAL_STRING) == 0
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 0
+    assert len(FAILED_PATTERN.findall(result.output)) == 1
+    assert result.exc_info[1].args[0].values() == [
+        {
+            'status': {
+                'color': 'red',
+                'text': 'Failed'
+            },
+            'local-path': 'sample.tds',
+            'msg': 'duplicate table name'
+        }
+    ]
+
+>> >> >> > 119
+d7a8...Adds
+test_with_multiple_calls_without_overwrite
