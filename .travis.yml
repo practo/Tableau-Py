@@ -14,16 +14,6 @@ matrix:
     env: TOXENV=lint
   fast_finish: true
 install:
-  - pip install 'tox>=2.3.1,<3.0.0'
+  - pip install tox
 script:
   - tox -e $TOXENV
-after_success:
-  - curl -Lo travis_after_all.py https://git.io/travis_after_all
-  - python travis_after_all.py
-  - export $(cat .to_export_back)
-  - |
-      if [ "$BUILD_LEADER" = "YES" ]; then
-        if [ "$BUILD_AGGREGATE_STATUS" = "others_succeeded" ]; then
-          python setup.py coverage && codecov
-        fi
-      fi
