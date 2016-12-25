@@ -92,3 +92,17 @@ def test_with_single_file():
     assert os.path.exists('sample.tde')
     assert result.output.index(INITIAL_STRING) == 0
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
+
+
+@isolated_filesystem
+def test_with_wrong_filename():
+    """
+    Asserts:
+        * Progress text is displayed
+        * OSError is thrown
+
+    """
+    result = RUNNER.invoke(main, ['sample1.tds'])
+    assert result.exit_code == -1
+    assert isinstance(result.exception, OSError)
+    assert result.output.index(INITIAL_STRING) == 0
