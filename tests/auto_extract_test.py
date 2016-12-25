@@ -10,6 +10,7 @@ import shutil
 import os
 
 from click.testing import CliRunner
+from auto_extract.cli import main
 
 RUNNER = CliRunner()
 
@@ -49,3 +50,14 @@ def isolated_filesystem(func):
                 assert os.path.getmtime('sample.tds') == last_modified_time
 
     return wrapper
+
+
+@isolated_filesystem
+def test_help():
+    """
+    Asserts:
+        * Help works without any error
+
+    """
+    result = RUNNER.invoke(main, ['--help'])
+    assert result.exit_code == 0
