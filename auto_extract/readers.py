@@ -189,9 +189,3 @@ class TDSReader(object):
         root = tree.getroot()
 
         self._xml_content_handler.parse(root)
-
-
-if __name__ == '__main__':
-    import doctest
-
-    doctest.testmod()
