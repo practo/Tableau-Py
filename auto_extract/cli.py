@@ -12,6 +12,7 @@ from pathlib2 import Path
 
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.readers import TDSReader
+from auto_extract.exceptions import AutoExtractException
 from auto_extract import _status
 import click
 
@@ -64,10 +65,16 @@ def main(files, overwrite, prefix, suffix, output_dir):
 
             tde_success_map[absolute_path] = _generate_extract(file_name, str(tde_path))
 
+    failed = False
     for key in tde_success_map:
+        if tde_success_map[key]['status'] == _status.FAILED:
+            failed = True
         _print_result(tde_success_map[key], cols=cols)
 
     ExtractAPI.cleanup()
+
+    if failed:
+        raise AutoExtractException(tde_success_map)
 
 
 def _generate_extract(tds_file_name, tde_file_name):
