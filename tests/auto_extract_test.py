@@ -198,3 +198,32 @@ def test_with_overwrite():
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
 
+
+@isolated_filesystem
+def test_with_any_other_extension():
+    """
+    Asserts:
+        * Gives error with any other extension file
+        * Progress text is displayed
+        * Throws errors and the error message
+        * Success is not printed
+        * 1 Failed is printed
+
+    """
+    RUNNER.invoke(main, ['sample.tds'])
+    result = RUNNER.invoke(main, ['sample.tde'])
+    assert result.exit_code == -1
+    assert result.output.index(INITIAL_STRING) == 0
+    assert isinstance(result.exception, AutoExtractException)
+    assert len(FAILED_PATTERN.findall(result.output)) == 1
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 0
+    assert result.exc_info[1].args[0].values() == [
+        {
+            'status': {
+                'color': 'red',
+                'text': 'Failed'
+            },
+            'local-path': 'sample.tde',
+            'msg': 'does not have extension `.tds`'
+        }
+    ]
