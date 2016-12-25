@@ -121,11 +121,9 @@ class TDSContentHandler(object):
             element tree representing a tableau datasource
 
         """
-        self._tds_metadata['datasource'] = dict(tds_xml.attrib)
+        datasource = dict(tds_xml.attrib)
 
-        assert isinstance(self._tds_metadata['datasource'], dict), \
-            'datasource information is not dict'
-        assert len(self._tds_metadata['datasource']) != 0, 'datasource information is empty'
+        assert len(datasource) != 0, 'datasource information is empty'
 
         connection_path = 'connection/named-connections/named-connection/connection'
         connections = list()
@@ -133,26 +131,27 @@ class TDSContentHandler(object):
         for connection in tds_xml.iterfind(connection_path):
             connections.append(connection.attrib)
 
-        assert len(connections) <= 1, \
-            'unexpected number of connections %r, in datasource' % len(connections)
-
-        if len(connections) == 0:
-            self._tds_metadata['connection'] = dict()
-            self._tds_columns = list()
-            return
+        assert len(connections) == 1, \
+            'expected number of connections to be {}, got {}'.format(1, len(connections))
 
         # dict because the lxml.etree.Element.attrib represents a dictionary
         # like class instance but not dictionary
-        self._tds_metadata['connection'] = dict(connections[0])
+        connection = dict(connections[0])
 
-        assert isinstance(self._tds_metadata['connection'], dict), \
-            'connection information is not dict'
-        assert len(self._tds_metadata['connection']) != 0, 'connection information is empty'
+        assert len(connection) != 0, 'connection information is empty'
 
         metadata_record_path = 'connection/metadata-records/metadata-record'
+        columns = list()
 
         for metadata_record in tds_xml.iterfind(metadata_record_path):
-            self._tds_columns.append(XmlDictConfig(metadata_record))
+            columns.append(XmlDictConfig(metadata_record))
+
+        self._tds_metadata = {
+            'datasource': datasource,
+            'connection': connection,
+        }
+
+        self._tds_columns = columns
 
 
 if __name__ == '__main__':
