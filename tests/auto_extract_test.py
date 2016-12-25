@@ -106,3 +106,16 @@ def test_with_wrong_filename():
     assert result.exit_code == -1
     assert isinstance(result.exception, OSError)
     assert result.output.index(INITIAL_STRING) == 0
+
+
+@isolated_filesystem
+def test_with_single_file_multiple_times():  # pylint: disable=locally-disabled,invalid-name
+    """
+    Asserts:
+        * Should not throw error when same file is mentioned multiple times
+        * Progress text is displayed
+
+    """
+    result = RUNNER.invoke(main, ['sample.tds', 'sample.tds'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
