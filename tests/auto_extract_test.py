@@ -16,6 +16,7 @@ from auto_extract.cli import main
 RUNNER = CliRunner()
 INITIAL_STRING = 'Processing datasource files\n'
 SUCCESS_PATTERN = re.compile('\\.+Success\n')
+FAILED_PATTERN = re.compile('\\.+Failed\n')
 
 
 def isolated_filesystem(func):
@@ -119,3 +120,24 @@ def test_with_single_file_multiple_times():  # pylint: disable=locally-disabled,
     result = RUNNER.invoke(main, ['sample.tds', 'sample.tds'])
     assert result.exit_code == 0
     assert result.output.index(INITIAL_STRING) == 0
+
+
+@isolated_filesystem
+def test_with_multiple_files():
+    """
+    Asserts:
+        * 2 different files can be invoked at the sample time
+        * Progress text is displayed
+        * 2 files are generated
+        * Success if returned for both the files
+        * Failed is not printed
+
+    """
+    shutil.copy('sample.tds', 'sample1.tds')
+    result = RUNNER.invoke(main, ['sample.tds', 'sample1.tds'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
+    assert os.path.exists('sample.tde')
+    assert os.path.exists('sample1.tde')
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 2
+    assert len(FAILED_PATTERN.findall(result.output)) == 0
