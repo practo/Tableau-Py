@@ -85,9 +85,7 @@ setup(
     ],
     test_suite='tests',
     tests_require=[
-        'coveralls',
         'pytest>=3.0.5,<3.1.0',
-        'pytest-cov',
         'pyyaml>=3.12,<=3.19',
     ],
     url='https://github.com/practo/Tableau-Py',
