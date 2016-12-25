@@ -173,6 +173,28 @@ def test_with_multiple_calls_without_overwrite():  # pylint: disable=locally-dis
         }
     ]
 
->> >> >> > 119
-d7a8...Adds
-test_with_multiple_calls_without_overwrite
+
+@isolated_filesystem
+def test_with_overwrite():
+    """
+    Asserts:
+        * Overwrite option works
+        * Progress is displayed
+        * File is generated
+        * Success is printed both the times
+        * Failed is not printed both times
+
+    """
+    result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 1
+    assert len(FAILED_PATTERN.findall(result.output)) == 0
+
+    result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
+    assert os.path.exists('sample.tde')
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 1
+    assert len(FAILED_PATTERN.findall(result.output)) == 0
+
