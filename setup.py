@@ -53,48 +53,12 @@ class TableauSDKInstall(Command):
         pip.main((['install', tableau_sdk]))
 
 
-class Coverage(Command):
-    """
-    Coverage setup.
-    """
-
-    description = (
-        'Run test suite against single instance of'
-        'Python and collect coverage data.'
-    )
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        import coverage
-        import unittest
-
-        cov = coverage.coverage(config_file='.coveragerc')
-        cov.erase()
-        cov.start()
-
-        test_loader = unittest.TestLoader()
-        test_suite = test_loader.discover(start_dir='tests')
-        unittest.TextTestRunner().run(test_suite)
-
-        cov.stop()
-        cov.save()
-        cov.report()
-        cov.html_report()
-
-
 setup(
     author='Anurag Agarwal',
     author_email='anurag.agarwal561994@gmail.com',
     description='auto_extract',
     download_url='',
     cmdclass={
-        'coverage': Coverage,
         'install_dependencies': TableauSDKInstall,
     },
     entry_points={
@@ -121,8 +85,6 @@ setup(
     ],
     test_suite='tests',
     tests_require=[
-        'codecov>=2.0.3,<3.0.0',
-        'coverage>=4.0.3,<5.0.0',
         'pytest>=3.0.5,<3.1.0',
         'pyyaml>=3.12,<=3.19',
     ],
