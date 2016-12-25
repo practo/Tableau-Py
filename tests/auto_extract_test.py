@@ -15,7 +15,7 @@ from auto_extract.exceptions import AutoExtractException
 from auto_extract.cli import main
 
 RUNNER = CliRunner()
-INITIAL_STRING = 'Processing datasource files\n'
+PROGRESS_TEXT_PATTERN = re.compile('^Processing datasource files\n')
 SUCCESS_PATTERN = re.compile('\\.+Success\n')
 FAILED_PATTERN = re.compile('\\.+Failed\n')
 
@@ -62,10 +62,12 @@ def test_help():
     """
     Asserts:
         * Help works without any error
+        * Progress text is not displayed
 
     """
     result = RUNNER.invoke(main, ['--help'])
     assert result.exit_code == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 0
 
 
 @isolated_filesystem
@@ -73,11 +75,12 @@ def test_without_argument():
     """
     Asserts:
         * Command works without any arguments
+        * Progress text is displayed
 
     """
     result = RUNNER.invoke(main)
     assert result.exit_code == 0
-    assert result.output == INITIAL_STRING
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
 
 
 @isolated_filesystem
@@ -92,7 +95,7 @@ def test_with_single_file():
     result = RUNNER.invoke(main, ['sample.tds'])
     assert result.exit_code == 0
     assert os.path.exists('sample.tde')
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
 
 
@@ -107,7 +110,7 @@ def test_with_wrong_filename():
     result = RUNNER.invoke(main, ['sample1.tds'])
     assert result.exit_code == -1
     assert isinstance(result.exception, OSError)
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
 
 
 @isolated_filesystem
@@ -120,7 +123,7 @@ def test_with_single_file_multiple_times():  # pylint: disable=locally-disabled,
     """
     result = RUNNER.invoke(main, ['sample.tds', 'sample.tds'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
 
 
 @isolated_filesystem
@@ -137,7 +140,7 @@ def test_with_multiple_files():
     shutil.copy('sample.tds', 'sample1.tds')
     result = RUNNER.invoke(main, ['sample.tds', 'sample1.tds'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert os.path.exists('sample.tde')
     assert os.path.exists('sample1.tde')
     assert len(SUCCESS_PATTERN.findall(result.output)) == 2
@@ -159,7 +162,7 @@ def test_with_multiple_calls_without_overwrite():  # pylint: disable=locally-dis
     result = RUNNER.invoke(main, ['sample.tds'])
     assert result.exit_code == -1
     assert isinstance(result.exception, AutoExtractException)
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 0
     assert len(FAILED_PATTERN.findall(result.output)) == 1
     assert result.exc_info[1].args[0].values() == [
@@ -187,13 +190,13 @@ def test_with_overwrite():
     """
     result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
 
     result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert os.path.exists('sample.tde')
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
@@ -213,7 +216,7 @@ def test_with_any_other_extension():
     RUNNER.invoke(main, ['sample.tds'])
     result = RUNNER.invoke(main, ['sample.tde'])
     assert result.exit_code == -1
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert isinstance(result.exception, AutoExtractException)
     assert len(FAILED_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 0
@@ -242,7 +245,7 @@ def test_with_suffix():
     """
     result = RUNNER.invoke(main, ['--suffix', '_TDE', 'sample.tds'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
     assert os.path.exists('sample_TDE.tde')
@@ -261,7 +264,7 @@ def test_with_prefix():
     """
     result = RUNNER.invoke(main, ['--prefix', 'TDE_', 'sample.tds'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
     assert os.path.exists('TDE_sample.tde')
@@ -280,7 +283,7 @@ def test_with_prefix_and_suffix():
     """
     result = RUNNER.invoke(main, ['--prefix', 'TDE_', '--suffix', '_TDE', 'sample.tds'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
     assert os.path.exists('TDE_sample_TDE.tde')
@@ -298,6 +301,7 @@ def test_with_output_dir_when_not_exist(): # pylint: disable=locally-disabled,in
     assert result.exit_code == -1
     assert not os.path.exists('temp' + os.sep + 'sample.tde')
     assert isinstance(result.exception, OSError)
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 0
 
 
 @isolated_filesystem
@@ -314,7 +318,7 @@ def test_with_output_dir_when_exist():
     os.mkdir('temp')
     result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
     assert result.exit_code == 0
-    assert result.output.index(INITIAL_STRING) == 0
+    assert len(PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
     assert os.path.exists('temp' + os.sep + 'sample.tde')
