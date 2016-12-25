@@ -8,12 +8,14 @@ from __future__ import absolute_import
 
 import shutil
 import os
+import re
 
 from click.testing import CliRunner
 from auto_extract.cli import main
 
 RUNNER = CliRunner()
 INITIAL_STRING = 'Processing datasource files\n'
+SUCCESS_PATTERN = re.compile('\\.+Success\n')
 
 
 def isolated_filesystem(func):
@@ -74,3 +76,19 @@ def test_without_argument():
     result = RUNNER.invoke(main)
     assert result.exit_code == 0
     assert result.output == INITIAL_STRING
+
+
+@isolated_filesystem
+def test_with_single_file():
+    """
+    Asserts:
+        * Progress text is displayed
+        * Extract file exists
+        * Success is displayed
+
+    """
+    result = RUNNER.invoke(main, ['sample.tds'])
+    assert result.exit_code == 0
+    assert os.path.exists('sample.tde')
+    assert result.output.index(INITIAL_STRING) == 0
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 1
