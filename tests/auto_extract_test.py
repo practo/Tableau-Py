@@ -13,6 +13,7 @@ from click.testing import CliRunner
 from auto_extract.cli import main
 
 RUNNER = CliRunner()
+INITIAL_STRING = 'Processing datasource files\n'
 
 
 def isolated_filesystem(func):
@@ -61,3 +62,15 @@ def test_help():
     """
     result = RUNNER.invoke(main, ['--help'])
     assert result.exit_code == 0
+
+
+@isolated_filesystem
+def test_without_argument():
+    """
+    Asserts:
+        * Command works without any arguments
+
+    """
+    result = RUNNER.invoke(main)
+    assert result.exit_code == 0
+    assert result.output == INITIAL_STRING
