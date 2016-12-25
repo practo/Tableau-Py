@@ -227,3 +227,60 @@ def test_with_any_other_extension():
             'msg': 'does not have extension `.tds`'
         }
     ]
+
+
+@isolated_filesystem
+def test_with_suffix():
+    """
+    Asserts:
+        * Runs successfully when suffix option is given
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file with suffix exists
+
+    """
+    result = RUNNER.invoke(main, ['--suffix', '_TDE', 'sample.tds'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 1
+    assert len(FAILED_PATTERN.findall(result.output)) == 0
+    assert os.path.exists('sample_TDE.tde')
+
+
+@isolated_filesystem
+def test_with_prefix():
+    """
+    Asserts:
+        * Runs successfully when prefix option is given
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file with prefix exists
+
+    """
+    result = RUNNER.invoke(main, ['--prefix', 'TDE_', 'sample.tds'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 1
+    assert len(FAILED_PATTERN.findall(result.output)) == 0
+    assert os.path.exists('TDE_sample.tde')
+
+
+@isolated_filesystem
+def test_with_prefix_and_suffix():
+    """
+    Asserts:
+        * Runs successfully when prefix and suffix option is given
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file with prefix and suffix exists
+
+    """
+    result = RUNNER.invoke(main, ['--prefix', 'TDE_', '--suffix', '_TDE', 'sample.tds'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 1
+    assert len(FAILED_PATTERN.findall(result.output)) == 0
+    assert os.path.exists('TDE_sample_TDE.tde')
