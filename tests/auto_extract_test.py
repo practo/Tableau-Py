@@ -284,3 +284,37 @@ def test_with_prefix_and_suffix():
     assert len(SUCCESS_PATTERN.findall(result.output)) == 1
     assert len(FAILED_PATTERN.findall(result.output)) == 0
     assert os.path.exists('TDE_sample_TDE.tde')
+
+
+@isolated_filesystem
+def test_with_output_dir_when_not_exist(): # pylint: disable=locally-disabled,invalid-name
+    """
+    Asserts:
+        * completes unsuccessfully with OSError
+        * File is not created
+
+    """
+    result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
+    assert result.exit_code == -1
+    assert not os.path.exists('temp' + os.sep + 'sample.tde')
+    assert isinstance(result.exception, OSError)
+
+
+@isolated_filesystem
+def test_with_output_dir_when_exist():
+    """
+    Asserts:
+        * completes successfully
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file is saved in temporary folder
+
+    """
+    os.mkdir('temp')
+    result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
+    assert result.exit_code == 0
+    assert result.output.index(INITIAL_STRING) == 0
+    assert len(SUCCESS_PATTERN.findall(result.output)) == 1
+    assert len(FAILED_PATTERN.findall(result.output)) == 0
+    assert os.path.exists('temp' + os.sep + 'sample.tde')
