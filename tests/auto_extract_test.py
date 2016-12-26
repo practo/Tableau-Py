@@ -14,6 +14,7 @@ import unittest
 from click.testing import CliRunner
 from auto_extract.exceptions import AutoExtractException
 from auto_extract.cli import main
+import config
 
 RUNNER = CliRunner()
 
@@ -42,7 +43,7 @@ def isolated_filesystem(func):
 
     def wrapper(*args, **kwargs):
         """Method Wrapper"""
-        with open('sample/sample.tds') as sample_stream:
+        with open(config.SAMPLE_DS_PATH) as sample_stream:
             with RUNNER.isolated_filesystem():
                 with open('sample.tds', 'w') as isolated_sample_stream:
                     shutil.copyfileobj(sample_stream, isolated_sample_stream)

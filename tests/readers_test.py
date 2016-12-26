@@ -14,6 +14,7 @@ import yaml
 from tableausdk.Extract import TableDefinition
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.readers import TDSReader
+import config
 
 
 class TestTDSReader(unittest.TestCase):
@@ -78,9 +79,9 @@ class TestTDSReader(unittest.TestCase):
 
         self._assert_metadata(self.reader.get_datasource_metadata(), 0, {})
 
-        self.reader.read('sample/sample.tds')
+        self.reader.read(config.SAMPLE_DS_PATH)
 
-        with open('tests/resources/sample-datasource-metadata-definition.yaml', 'r') as stream:
+        with open(config.TEST_DS_RESULT_METADATA_PATH) as stream:
             expected_result = yaml.load(stream)
             self._assert_metadata(self.reader.get_datasource_metadata(), 2, expected_result)
 
@@ -110,9 +111,9 @@ class TestTDSReader(unittest.TestCase):
 
         self._assert_column_definitions(self.reader.get_datasource_column_defs(), 0, [])
 
-        self.reader.read('sample/sample.tds')
+        self.reader.read(config.SAMPLE_DS_PATH)
 
-        with open('tests/resources/sample-datasource-column-definitions.yaml', 'r') as stream:
+        with open(config.TEST_DS_RESULT_COLUMN_DEFINITION_PATH) as stream:
             expected_result = yaml.load(stream)
             self._assert_column_definitions(self.reader.get_datasource_column_defs(), 9, expected_result)
 
@@ -158,7 +159,7 @@ class TestTDSReader(unittest.TestCase):
         table_definition = self.reader.define_table(collation=collation)
         self._assert_table_definition(table_definition, 0, collation)
 
-        self.reader.read('sample/sample.tds')
+        self.reader.read(config.SAMPLE_DS_PATH)
 
         table_definition = self.reader.define_table(collation=collation)
         self._assert_table_definition(table_definition, 9, collation)
