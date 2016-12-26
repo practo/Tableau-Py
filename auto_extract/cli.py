@@ -118,17 +118,15 @@ def _generate_extract(tds_file_name, tde_file_name):
         table_definition = tds_reader.define_table()
 
         new_extract.addTable('Extract', tableDefinition=table_definition)
+
+        new_extract.close()
+        table_definition.close()
+
         result['status'] = _status.SUCCESS
     except (IOError, OSError) as err:
         result['msg'] = str(err)
     except TableauException:
         result['msg'] = GetLastErrorMessage()
-    finally:
-        if table_definition is not None:
-            table_definition.close()
-
-        # Close the extract in order to save the .tde file and clean up resources
-        new_extract.close()
 
     return result
 
@@ -203,5 +201,5 @@ def _compute_cols(files):
     return max(cols, 80)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     main()  # pylint: disable=locally-disabled,no-value-for-parameter
