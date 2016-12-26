@@ -33,11 +33,12 @@ class TestTDSReader(unittest.TestCase):
 
     def test_read(self):
         """
-        Asserts:
-            * Raises IOError for missing file / directory
-            * Raises IOError when file expected but folder or something other
-              than file given
-            * Raises IOError when file given does not have .tds extension in name
+        Asserts
+        -------
+        * Raises IOError for missing file / directory
+        * Raises IOError when file expected but folder or something other
+          than file given
+        * Raises IOError when file given does not have .tds extension in name
 
         """
         with self.assertRaisesRegexp(IOError, 'does not exists'):
@@ -51,11 +52,12 @@ class TestTDSReader(unittest.TestCase):
 
     def _assert_metadata(self, metadata, expected_length, expected_value):
         """
-        Asserts:
-            * Value is not None
-            * Value is having expected length
-            * Value is instance of dictionary
-            * Value is equal to expected value
+        Asserts
+        -------
+        * Value is not None
+        * Value is having expected length
+        * Value is instance of dictionary
+        * Value is equal to expected value
 
         """
         self.assertIsNotNone(metadata)
@@ -67,9 +69,10 @@ class TestTDSReader(unittest.TestCase):
 
     def test_get_datasource_metadata(self):
         """
-        Asserts:
-            * Metadata values before calling read
-            * Metadata values after calling read
+        Asserts
+        -------
+        * Metadata values before calling read
+        * Metadata values after calling read
 
         """
 
@@ -83,11 +86,12 @@ class TestTDSReader(unittest.TestCase):
 
     def _assert_column_definitions(self, column_definitions, expected_length, expected_value):
         """
-        Asserts:
-            * Value is not None
-            * Value is having expected length
-            * Value is instance of list
-            * Value is equal to expected value
+        Asserts
+        -------
+        * Value is not None
+        * Value is having expected length
+        * Value is instance of list
+        * Value is equal to expected value
 
         """
         self.assertIsNotNone(column_definitions)
@@ -97,9 +101,10 @@ class TestTDSReader(unittest.TestCase):
 
     def test_get_datasource_column_defs(self):
         """
-        Asserts:
-            * Column definition values before calling read
-            * Column definition values after calling read
+        Asserts
+        -------
+        * Column definition values before calling read
+        * Column definition values after calling read
 
         """
 
@@ -113,12 +118,13 @@ class TestTDSReader(unittest.TestCase):
 
     def _assert_table_definition(self, table_def, expected_col_count, expected_collation):
         """
-        Asserts:
-            * Value is not None
-            * Value is instance of TableDefinition
-            * Value has expected column count
-            * Value has expected default collation
-            * Column count should be equal to length of get_datasource_column_defs
+        Asserts
+        -------
+        * Value is not None
+        * Value is instance of TableDefinition
+        * Value has expected column count
+        * Value has expected default collation
+        * Column count should be equal to length of get_datasource_column_defs
 
         """
         self.assertIsNotNone(table_def)
@@ -132,12 +138,13 @@ class TestTDSReader(unittest.TestCase):
 
     def test_define_table(self):
         """
-        Asserts:
-            * Table Definition value before calling read
-            * Table Definition value after calling read
-            * Each column in table definition is having the expected name
-            * Each column is table definition having the expected type
-            * Each column is table definition having expected collation (default collation)
+        Asserts
+        -------
+        * Table Definition value before calling read
+        * Table Definition value after calling read
+        * Each column in table definition is having the expected name
+        * Each column is table definition having the expected type
+        * Each column is table definition having expected collation (default collation)
 
         """
         import re
