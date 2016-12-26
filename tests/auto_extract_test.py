@@ -11,6 +11,11 @@ import os
 import re
 import unittest
 
+try:
+    import __pypy__
+except ImportError:
+    __pypy__ = None
+
 from click.testing import CliRunner
 from auto_extract.exceptions import AutoExtractException
 from auto_extract.cli import main
@@ -159,6 +164,7 @@ class TestAutoExtractCommand(unittest.TestCase):
         assert len(self.FAILED_PATTERN.findall(result.output)) == 0
 
     @isolated_filesystem
+    @unittest.skipIf(__pypy__, 'Some problem with pypy type implementation returns AttributeError')
     def test_with_multiple_calls_without_overwrite(self):  # pylint: disable=locally-disabled,invalid-name
         """
         Asserts:
