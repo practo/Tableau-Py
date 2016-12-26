@@ -103,8 +103,6 @@ class TDSReader(object):
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
-        >>> tds_reader.get_datasource_column_defs() == tds_content_handler.column_definitions
-        True
 
         """
         tds_content = self._xml_content_handler
@@ -125,8 +123,6 @@ class TDSReader(object):
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
-        >>> tds_reader.get_datasource_metadata() == tds_content_handler.metadata
-        True
 
         """
         tds_content = self._xml_content_handler
@@ -156,18 +152,7 @@ class TDSReader(object):
         >>> from auto_extract.content_handlers import TDSContentHandler
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
-        >>> tds_reader.read('some random file') #doctest: +ELLIPSIS
-        Traceback (most recent call last):
-            ...
-        IOError: does not exists
-
-        >>> from auto_extract.content_handlers import TDSContentHandler
-        >>> tds_content_handler = TDSContentHandler()
-        >>> tds_reader = TDSReader(tds_content_handler)
-        >>> tds_reader.read('sample') #doctest: +ELLIPSIS
-        Traceback (most recent call last):
-            ...
-        IOError: not a file
+        >>> tds_reader.read('sample/sample.tds')
 
         """
         tds_file_path = Path(tds_file)
