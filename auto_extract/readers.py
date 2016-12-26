@@ -13,6 +13,7 @@ from tableausdk.Extract import TableDefinition
 
 import lxml.etree as etree
 import auto_extract.constants as constants
+import auto_extract.error_messages as err_msgs
 
 
 class TDSReader(object):
@@ -167,18 +168,18 @@ class TDSReader(object):
         tds_file_path = Path(tds_file)
 
         if not tds_file_path.exists():
-            raise IOError('does not exists')
+            raise IOError(err_msgs.FILE_NO_EXISTS.format(tds_file))
 
         absolute_path = str(tds_file_path.resolve())
 
         if not tds_file_path.is_file():
-            raise IOError('not a file')
+            raise IOError(err_msgs.NOT_FILE.format(tds_file))
 
         if not os.access(absolute_path, os.R_OK):
-            raise IOError('not readable')
+            raise IOError(err_msgs.NOT_READABLE.format(tds_file))
 
         if tds_file_path.suffix != constants.TDS_EXTENSION:
-            raise IOError('does not have extension `.tds`')
+            raise IOError(err_msgs.FILE_NOT_TDS.format(tds_file))
 
         tree = etree.parse(absolute_path, parser=self._parser)
         root = tree.getroot()

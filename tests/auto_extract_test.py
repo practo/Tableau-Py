@@ -14,6 +14,7 @@ import unittest
 from click.testing import CliRunner
 from auto_extract.exceptions import AutoExtractException
 from auto_extract.cli import main
+import auto_extract.error_messages as err_msgs
 import config
 
 RUNNER = CliRunner()
@@ -237,7 +238,7 @@ class TestAutoExtractCommand(unittest.TestCase):
                     'text': 'Failed'
                 },
                 'local-path': 'sample.tde',
-                'msg': 'does not have extension `.tds`'
+                'msg': err_msgs.FILE_NOT_TDS.format('sample.tde')
             }
         ]
 
