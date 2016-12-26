@@ -304,7 +304,7 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
         assert result.exit_code == -1
-        assert not os.path.exists('temp' + os.sep + 'sample.tde')
+        assert not os.path.exists(os.path.join('temp', 'sample.tde'))
         assert isinstance(result.exception, OSError)
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 0
 
@@ -325,4 +325,4 @@ class TestAutoExtractCommand(unittest.TestCase):
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
         assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
         assert len(self.FAILED_PATTERN.findall(result.output)) == 0
-        assert os.path.exists('temp' + os.sep + 'sample.tde')
+        assert os.path.exists(os.path.join('temp', 'sample.tde'))
