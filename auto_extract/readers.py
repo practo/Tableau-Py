@@ -10,7 +10,9 @@ import os
 from pathlib2 import Path
 from tableausdk.Types import Type, Collation
 from tableausdk.Extract import TableDefinition
+
 import lxml.etree as etree
+import auto_extract.constants as constants
 
 
 class TDSReader(object):
@@ -74,13 +76,20 @@ class TDSReader(object):
         table_definition.setDefaultCollation(collation)
 
         for i, definition in enumerate(column_definitions, start=1):
-            parent_name = definition.get('parent-name')
-            local_name = definition.get('local-name')
-            local_type = definition.get('local-type')
+            parent_name = definition.get(constants.COL_DEF_PARENT_NAME)
+            local_name = definition.get(constants.COL_DEF_LOCAL_NAME)
+            local_type = definition.get(constants.COL_DEF_LOCAL_TYPE)
 
-            assert parent_name is not None, 'parent-name is None at: {}:\n'.format(i) + str(definition)
-            assert local_name is not None, 'local-name is None at: {}:\n'.format(i) + str(definition)
-            assert local_type is not None, 'local-type is None at: {}:\n'.format(i) + str(definition)
+            assert_msg = err_msgs.IS_NONE + 'at: {}: {!s}\n'
+
+            assert parent_name is not None, \
+                assert_msg.format(constants.COL_DEF_PARENT_NAME, i, definition)
+
+            assert local_name is not None, \
+                assert_msg.format(constants.COL_DEF_LOCAL_NAME, i, definition)
+
+            assert local_type is not None, \
+                assert_msg.format(constants.COL_DEF_LOCAL_TYPE, i, definition)
 
             column_name = '{}.{}'.format(parent_name, local_name)
             column_type = self._type_map.get(local_type, self._type_map['unicode_string'])
@@ -168,7 +177,7 @@ class TDSReader(object):
         if not os.access(absolute_path, os.R_OK):
             raise IOError('not readable')
 
-        if tds_file_path.suffix != '.tds':
+        if tds_file_path.suffix != constants.TDS_EXTENSION:
             raise IOError('does not have extension `.tds`')
 
         tree = etree.parse(absolute_path, parser=self._parser)
