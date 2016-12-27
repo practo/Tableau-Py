@@ -203,5 +203,5 @@ def _compute_cols(files):
     return max(cols, 80)
 
 
-if __name__ == '__main__': # pragma: no cover
+if __name__ == '__main__':  # pragma: no cover
     main()  # pylint: disable=locally-disabled,no-value-for-parameter
