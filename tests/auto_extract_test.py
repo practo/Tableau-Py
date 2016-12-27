@@ -8,15 +8,16 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import shutil
 import os
 import re
+import shutil
 import unittest
 
 from click.testing import CliRunner
-from auto_extract.exceptions import AutoExtractException
+
 from auto_extract.cli import main
-import auto_extract.error_messages as err_msgs
+from auto_extract import error_messages as err_msgs
+from auto_extract.exceptions import AutoExtractException
 import config
 
 RUNNER = CliRunner()

@@ -12,11 +12,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import unittest
 from copy import deepcopy
-import yaml
-from auto_extract.content_handlers import TDSContentHandler
+import unittest
+
 import lxml.etree as etree
+import yaml
+
+from auto_extract.content_handlers import TDSContentHandler
 
 
 class TestTDSContentHandler(unittest.TestCase):

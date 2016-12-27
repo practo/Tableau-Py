@@ -11,13 +11,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import unittest
 import os
-import yaml
+import unittest
+
 from tableausdk.Extract import TableDefinition
+import yaml
+
 from auto_extract.content_handlers import TDSContentHandler
+from auto_extract import error_messages as err_msgs
 from auto_extract.readers import TDSReader
-import auto_extract.error_messages as err_msgs
 import config
 
 

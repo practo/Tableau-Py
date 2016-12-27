@@ -9,13 +9,14 @@ from __future__ import print_function
 
 import os
 
-from pathlib2 import Path
-from tableausdk.Types import Type, Collation
-from tableausdk.Extract import TableDefinition
-
 import lxml.etree as etree
-import auto_extract.constants as constants
-import auto_extract.error_messages as err_msgs
+from pathlib2 import Path
+from tableausdk.Extract import TableDefinition
+from tableausdk.Types import Collation
+from tableausdk.Types import Type
+
+from auto_extract import constants
+from auto_extract import error_messages as err_msgs
 
 
 class TDSReader(object):

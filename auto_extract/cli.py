@@ -7,16 +7,17 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tableausdk.Exceptions import TableauException, GetLastErrorMessage
-from tableausdk.Extract import ExtractAPI, Extract
-
-from pathlib2 import Path
-
-from auto_extract.content_handlers import TDSContentHandler
-from auto_extract.readers import TDSReader
-from auto_extract.exceptions import AutoExtractException
-from auto_extract import _status
 import click
+from pathlib2 import Path
+from tableausdk.Exceptions import GetLastErrorMessage
+from tableausdk.Exceptions import TableauException
+from tableausdk.Extract import Extract
+from tableausdk.Extract import ExtractAPI
+
+from auto_extract import _status
+from auto_extract.content_handlers import TDSContentHandler
+from auto_extract.exceptions import AutoExtractException
+from auto_extract.readers import TDSReader
 
 
 @click.command(name='auto_extract')
