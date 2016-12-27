@@ -51,7 +51,7 @@ def main(files, overwrite, prefix, suffix, output_dir):
     if output_dir is not None:
         absolute_output_dir = Path(output_dir).resolve()
 
-    with click.progressbar(files, label='Processing datasource files') as file_names:
+    with click.progressbar(files, label=constants.PROGRESS_TEXT) as file_names:
         for file_name in file_names:
             absolute_path = str(Path(file_name).resolve())
 

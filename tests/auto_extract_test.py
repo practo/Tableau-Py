@@ -16,6 +16,7 @@ import unittest
 from click.testing import CliRunner
 
 from auto_extract.cli import main
+from auto_extract import constants
 from auto_extract import error_messages as err_msgs
 from auto_extract.exceptions import AutoExtractException
 import config
@@ -75,7 +76,7 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     """
 
-    PROGRESS_TEXT_PATTERN = re.compile('^Processing datasource files\n')
+    PROGRESS_TEXT_PATTERN = re.compile('^{}\n'.format(constants.PROGRESS_TEXT))
     SUCCESS_PATTERN = re.compile('\\.+Success\n')
     FAILED_PATTERN = re.compile('\\.+Failed\n')
 
