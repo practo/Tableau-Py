@@ -137,7 +137,6 @@ def _generate_extract(tds_file_name, tde_file_name):
 
     """
     new_extract = Extract(tde_file_name)
-    table_definition = None
     result = {
         'status': _status.FAILED,
         'local-path': tds_file_name,
