@@ -5,6 +5,8 @@ Unit Test Cases for auto_extract command
 
 """
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import shutil
 import os

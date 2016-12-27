@@ -5,6 +5,9 @@ to python dictionary object
 
 :ref: http://code.activestate.com/recipes/410469-xml-as-dictionary/
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 
 class XmlListConfig(list):
