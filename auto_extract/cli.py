@@ -15,6 +15,7 @@ from tableausdk.Extract import Extract
 from tableausdk.Extract import ExtractAPI
 
 from auto_extract import _status
+from auto_extract import constants
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.exceptions import AutoExtractException
 from auto_extract.readers import TDSReader
@@ -57,8 +58,7 @@ def main(files, overwrite, prefix, suffix, output_dir):
             if absolute_path in tde_success_map:
                 continue
 
-            tds_path = Path(file_name)
-            tde_path = tds_path.with_name(prefix + tds_path.stem + suffix).with_suffix('.tde')
+            tde_path = _get_tde_path(prefix, file_name, suffix)
 
             if absolute_output_dir is not None:
                 tde_path = absolute_output_dir / tde_path.name
@@ -78,6 +78,32 @@ def main(files, overwrite, prefix, suffix, output_dir):
 
     if failed:
         raise AutoExtractException(tde_success_map)
+
+
+def _get_tde_path(prefix, tds_file_name, suffix):
+    """
+    Returns tde file path from tds file path
+
+    Parameters
+    ----------
+    prefix: str
+        prefix to add to the filename
+    tds_file_name: str
+    suffix: str
+        suffix to add to the filename
+
+    Returns
+    -------
+    :py:obj:`~pathlib2.Path`
+        path of tde file
+
+    """
+    tds_path = Path(tds_file_name)
+    tde_file_name = prefix + tds_path.stem + suffix
+    tde_path = tds_path.with_name(tde_file_name)
+    tde_path = tde_path.with_suffix(constants.TDE_EXTENSION)
+
+    return tde_path
 
 
 def _generate_extract(tds_file_name, tde_file_name):
