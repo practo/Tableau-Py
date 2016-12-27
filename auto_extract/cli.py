@@ -22,10 +22,14 @@ from auto_extract.readers import TDSReader
 
 
 @click.command(name='auto_extract')
-@click.option('-o', '--output-dir', type=click.Path(), help='Output directory for generated files')
-@click.option('-s', '--suffix', default='', help='Adds suffix to generated file names')
-@click.option('-p', '--prefix', default='', help='Adds prefix to generated file names')
-@click.option('--overwrite', is_flag=True, help='To overwrite already existing .tde files')
+@click.option('-o', '--output-dir', type=click.Path(),
+              help='Output directory for generated files')
+@click.option('-s', '--suffix', default='',
+              help='Adds suffix to generated file names')
+@click.option('-p', '--prefix', default='',
+              help='Adds prefix to generated file names')
+@click.option('--overwrite', is_flag=True,
+              help='To overwrite already existing .tde files')
 @click.argument('files', nargs=-1, type=click.Path())
 def main(files, overwrite, prefix, suffix, output_dir):
     """
@@ -66,7 +70,8 @@ def main(files, overwrite, prefix, suffix, output_dir):
             if overwrite and tde_path.exists():
                 tde_path.unlink()
 
-            tde_success_map[absolute_path] = _generate_extract(file_name, str(tde_path))
+            result = _generate_extract(file_name, str(tde_path))
+            tde_success_map[absolute_path] = result
 
     failed = False
     for key in tde_success_map:
@@ -215,8 +220,8 @@ def _compute_cols(files):
 
     >>> import os
     >>> files = ['abcd', 'abcd'*18]
-    >>> s = 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd...Success'
-    >>> s += os.linesep
+    >>> s = 'abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd'
+    >>> s += 'abcdabcdabcd...Success' + os.linesep
     >>> _compute_cols(files) == len(s)
     True
 
