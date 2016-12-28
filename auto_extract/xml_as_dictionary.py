@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-Module contains defination of classes that help convert an xml tree
+Module contains definition of classes that help convert an xml tree
 to python dictionary object
 
 :ref: http://code.activestate.com/recipes/410469-xml-as-dictionary/
 """
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
 
 class XmlListConfig(list):
-    """
-    XmlListConfig instantiate a array in xml as a list in python
+    """XmlListConfig instantiate a array in xml as a list in python
 
     Parameters
     ----------
     a_list : :py:obj:`~lxml.etree.Element`
         an xml element containing xml like array of elements
-
     """
 
     def __init__(self, a_list):
@@ -48,29 +47,26 @@ class XmlListConfig(list):
 
 
 class XmlDictConfig(dict):
-    """
-    XmlDictConfig instantiate a xml tree as dict in python
+    """XmlDictConfig instantiate a xml tree as dict in python
 
     Parameters
     ----------
     parent_element : :py:obj:`~lxml.etree.Element`
         parent_element of elements to parse as dictionary
 
-
     Warnings
     --------
-    - If the parent_element only contains array of same tag elements, then wrap
-      the parent element into another element and pass it or otherwise only
-      the last value will be returned from the array as others are overwritten.
-
+    - If the parent_element only contains array of same tag elements,
+      then wrap the parent element into another element and pass it
+      or otherwise only the last value will be returned from the
+      array as others are overwritten.
 
     Notes
     -----
-    - It assumes if first 2 children's tags are different then all are different
-      else all are same (in which case it treats the element as list). So an element
-      expected to contain only one element will be returned as a `dict`.
-
-
+    - It assumes if first 2 children's tags are different then all are
+      different else all are same (in which case it treats the element
+      as list). So an element expected to contain only one element will
+      be returned as a `dict`.
     Example
     -------
 
