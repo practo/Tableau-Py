@@ -286,9 +286,9 @@ class TestTDSContentHandler(unittest.TestCase):
             self.assertTrue(definition.has_key('parent-name'))
             self.assertTrue(definition.has_key('local-type'))
 
-            self.assertIsInstance(definition['local-name'], str)
-            self.assertIsInstance(definition['parent-name'], str)
-            self.assertIsInstance(definition['local-type'], str)
+            self.assertIsInstance(definition['local-name'], unicode)
+            self.assertIsInstance(definition['parent-name'], unicode)
+            self.assertIsInstance(definition['local-type'], unicode)
 
         with open('tests/resources/sample-datasource-column-definitions.yaml', 'r') as stream:
             expected_result = yaml.load(stream)

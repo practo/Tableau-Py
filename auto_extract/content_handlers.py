@@ -8,8 +8,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import lxml.etree as etree
+import xmltodict
+
 from auto_extract import error_messages as err_msgs
-from auto_extract.xml_as_dictionary import XmlDictConfig
 
 
 class TDSParseException(Exception):
@@ -189,7 +191,8 @@ class TDSContentHandler(object):
         columns = list()
 
         for metadata_record in tds_xml.iterfind(metadata_record_path):
-            columns.append(XmlDictConfig(metadata_record))
+            xml_dict = xmltodict.parse(etree.tostring(metadata_record))
+            columns.append(xml_dict.get('metadata-record'))
 
         self._tds_metadata = {
             self.K_METADATA_DATASOURCE: datasource,

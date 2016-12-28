@@ -20,14 +20,6 @@ Submodules
     :undoc-members:
     :show-inheritance:
 
-:mod:`auto_extract.xml_as_dictionary` -- XML As Dictionary
-----------------------------------------------------------
-
-.. automodule:: auto_extract.xml_as_dictionary
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`auto_extract.exceptions` -- Exceptions
 --------------------------------------------
 
