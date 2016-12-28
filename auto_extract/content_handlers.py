@@ -8,7 +8,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from auto_extract import constants
 from auto_extract import error_messages as err_msgs
 from auto_extract.xml_as_dictionary import XmlDictConfig
 
@@ -23,10 +22,13 @@ class TDSParseException(Exception):
 class TDSContentHandler(object):
     """Instance of parsed tableau datasource file"""
 
+    K_COL_DEF_PARENT_NAME = 'parent-name'
+    K_COL_DEF_LOCAL_NAME = 'local-name'
+    K_COL_DEF_LOCAL_TYPE = 'local-type'
     _col_def_keys = [
-        constants.COL_DEF_PARENT_NAME,
-        constants.COL_DEF_LOCAL_NAME,
-        constants.COL_DEF_LOCAL_TYPE,
+        K_COL_DEF_PARENT_NAME,
+        K_COL_DEF_LOCAL_NAME,
+        K_COL_DEF_LOCAL_TYPE,
     ]
 
     def __init__(self):

@@ -16,6 +16,7 @@ from tableausdk.Types import Collation
 from tableausdk.Types import Type
 
 from auto_extract import constants
+from auto_extract.content_handlers import TDSContentHandler
 from auto_extract import error_messages as err_msgs
 
 
@@ -80,20 +81,23 @@ class TDSReader(object):
         table_definition.setDefaultCollation(collation)
 
         for i, definition in enumerate(column_definitions, start=1):
-            parent_name = definition.get(constants.COL_DEF_PARENT_NAME)
-            local_name = definition.get(constants.COL_DEF_LOCAL_NAME)
-            local_type = definition.get(constants.COL_DEF_LOCAL_TYPE)
+            parent_name = definition.get(TDSContentHandler.K_COL_DEF_PARENT_NAME)
+            local_name = definition.get(TDSContentHandler.K_COL_DEF_LOCAL_NAME)
+            local_type = definition.get(TDSContentHandler.K_COL_DEF_LOCAL_TYPE)
 
             assert_msg = err_msgs.IS_NONE + 'at: {}: {!s}\n'
 
-            assert parent_name is not None, \
-                assert_msg.format(constants.COL_DEF_PARENT_NAME, i, definition)
+            assert parent_name is not None, assert_msg.format(
+                TDSContentHandler.K_COL_DEF_PARENT_NAME, i, definition
+            )
 
-            assert local_name is not None, \
-                assert_msg.format(constants.COL_DEF_LOCAL_NAME, i, definition)
+            assert local_name is not None, assert_msg.format(
+                TDSContentHandler.K_COL_DEF_LOCAL_NAME, i, definition
+            )
 
-            assert local_type is not None, \
-                assert_msg.format(constants.COL_DEF_LOCAL_TYPE, i, definition)
+            assert local_type is not None, assert_msg.format(
+                TDSContentHandler.K_COL_DEF_LOCAL_TYPE, i, definition
+            )
 
             column_name = '{}.{}'.format(parent_name, local_name)
             column_type = self._type_map.get(local_type, self._type_map['unicode_string'])

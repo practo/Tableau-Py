@@ -6,7 +6,3 @@ from __future__ import print_function
 
 TDS_EXTENSION = '.tds'
 TDE_EXTENSION = '.tde'
-
-COL_DEF_PARENT_NAME = 'parent-name'
-COL_DEF_LOCAL_NAME = 'local-name'
-COL_DEF_LOCAL_TYPE = 'local-type'
