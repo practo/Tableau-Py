@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 This module defines xml readers for tableau files
-
 """
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -21,15 +21,13 @@ from auto_extract import error_messages as err_msgs
 
 
 class TDSReader(object):
-    """
-    Represents a reader object that reads tableau datasource file (\\*.tds)
-
+    """Reader class for Tableau datasource files (\\*.tds)
 
     Parameters
     ----------
     xml_content_handler : TDSContentHandler
-        content handler to parse information from tableau datasource xml information into
-
+        content handler to parse information from tableau datasource
+        parsed information will be saved in this object
     """
 
     _parser = etree.XMLParser(remove_blank_text=True, remove_comments=True)
@@ -49,21 +47,28 @@ class TDSReader(object):
         self._xml_content_handler = xml_content_handler
 
     def define_table(self, collation=Collation.EN_US_CI):
-        """
-        Creates a TableDefinition object from the column information returned after parsing
-        the tableau datasource file
+        """Returns TableDefinition object from parsed metadata-records
 
-        Other Parameters
-        ----------------
-        collation : :py:attr:`~tableausdk.Types.Collation`
+        The method uses
+        :tableausdk:`Tableau Extract <classtableausdk_1_1_extract_1_1_extract>`
+        module to create Table Definition object from parsed column
+        information from the datasource file.
+
+        Parameters
+        ----------
+        collation: :py:attr:`~tableausdk.Types.Collation`, optional
+            collation to be used for all columns of the table
+            (default value is :py:attr:`~tableausdk.Types.Collation.EN_US_CI`)
 
         Returns
         -------
-        :tableausdk:`TableDefinition <classtableausdk_1_1_extract_1_1_table_definition>`
+        :tableausdk:`TableDefinition \
+        <classtableausdk_1_1_extract_1_1_table_definition>`
 
         Raises
         ------
-        :tableausdk:`TableauException <classtableausdk_1_1_exceptions_1_1_tableau_exception>`
+        :tableausdk:`TableauException \
+        <classtableausdk_1_1_exceptions_1_1_tableau_exception>`
 
         Examples
         --------
@@ -73,42 +78,44 @@ class TDSReader(object):
         >>> tds_reader.read('sample/sample.tds')
         >>> tds_reader.define_table().getColumnCount()
         9
-
         """
+
         table_definition = TableDefinition()
         column_definitions = self.get_datasource_column_defs()
 
         table_definition.setDefaultCollation(collation)
 
-        for i, definition in enumerate(column_definitions, start=1):
-            parent_name = definition.get(TDSContentHandler.K_COL_DEF_PARENT_NAME)
-            local_name = definition.get(TDSContentHandler.K_COL_DEF_LOCAL_NAME)
-            local_type = definition.get(TDSContentHandler.K_COL_DEF_LOCAL_TYPE)
+        for i, col_def in enumerate(column_definitions, start=1):
+            parent_name = col_def.get(TDSContentHandler.K_COL_DEF_PARENT_NAME)
+            local_name = col_def.get(TDSContentHandler.K_COL_DEF_LOCAL_NAME)
+            local_type = col_def.get(TDSContentHandler.K_COL_DEF_LOCAL_TYPE)
 
             assert_msg = err_msgs.IS_NONE + 'at: {}: {!s}\n'
 
             assert parent_name is not None, assert_msg.format(
-                TDSContentHandler.K_COL_DEF_PARENT_NAME, i, definition
+                TDSContentHandler.K_COL_DEF_PARENT_NAME, i, col_def
             )
 
             assert local_name is not None, assert_msg.format(
-                TDSContentHandler.K_COL_DEF_LOCAL_NAME, i, definition
+                TDSContentHandler.K_COL_DEF_LOCAL_NAME, i, col_def
             )
 
             assert local_type is not None, assert_msg.format(
-                TDSContentHandler.K_COL_DEF_LOCAL_TYPE, i, definition
+                TDSContentHandler.K_COL_DEF_LOCAL_TYPE, i, col_def
             )
 
             column_name = '{}.{}'.format(parent_name, local_name)
-            column_type = self._type_map.get(local_type, self._type_map['unicode_string'])
+            column_type = self._type_map.get(
+                local_type,
+                self._type_map['unicode_string']
+            )
 
             table_definition.addColumn(column_name, column_type)
 
         return table_definition
 
     def get_datasource_column_defs(self):
-        """
-        Returns read tableau datasource column information
+        """Gets tableau datasource column information
 
         Returns
         -------
@@ -120,15 +127,14 @@ class TDSReader(object):
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
-
         """
+
         tds_content = self._xml_content_handler
 
         return tds_content.column_definitions
 
     def get_datasource_metadata(self):
-        """
-        Returns read tableau datasource metadata information
+        """Gets tableau datasource metadata information
 
         Returns
         -------
@@ -140,15 +146,14 @@ class TDSReader(object):
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
-
         """
+
         tds_content = self._xml_content_handler
 
         return tds_content.metadata
 
     def read(self, tds_file):
-        """
-        Reads tableau datasource file into `xml_content_handler`
+        """Reads tableau datasource file into `xml_content_handler`
 
         Parameters
         ----------
@@ -171,8 +176,8 @@ class TDSReader(object):
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
-
         """
+
         tds_file_path = Path(tds_file)
 
         if not tds_file_path.exists():
