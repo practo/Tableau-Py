@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 This module defines auto_extract command
-
 """
 from __future__ import absolute_import
 from __future__ import division
@@ -32,7 +31,8 @@ from auto_extract.readers import TDSReader
               help='To overwrite already existing .tde files')
 @click.argument('files', nargs=-1, type=click.Path())
 def main(files, overwrite, prefix, suffix, output_dir):
-    """
+    """auto_extract command
+
     The script creates tableau datasource extracts corresponding
     to input tableau datasource `FILES`.
 
@@ -44,8 +44,8 @@ def main(files, overwrite, prefix, suffix, output_dir):
     like '*', anything that will result in a valid file path.
 
     OSError will be raised otherwise.
-
     """
+
     ExtractAPI.initialize()
     tde_success_map = dict()
 
@@ -86,8 +86,7 @@ def main(files, overwrite, prefix, suffix, output_dir):
 
 
 def _get_tde_path(prefix, tds_file_name, suffix):
-    """
-    Returns tde file path from tds file path
+    """Returns tde file path from tds file path
 
     Parameters
     ----------
@@ -101,8 +100,8 @@ def _get_tde_path(prefix, tds_file_name, suffix):
     -------
     :py:obj:`~pathlib2.Path`
         path of tde file
-
     """
+
     tds_path = Path(tds_file_name)
     tde_file_name = prefix + tds_path.stem + suffix
     tde_path = tds_path.with_name(tde_file_name)
@@ -112,8 +111,7 @@ def _get_tde_path(prefix, tds_file_name, suffix):
 
 
 def _generate_extract(tds_file_name, tde_file_name):
-    """
-    Generates a tde file from tds file
+    """Generates a tde file from tds file
 
     Parameters
     ----------
@@ -134,8 +132,8 @@ def _generate_extract(tds_file_name, tde_file_name):
                 'msg': error message if any,
                 'local-path': path of the tableau datasource file
             }
-
     """
+
     new_extract = Extract(tde_file_name)
     result = {
         'status': _status.FAILED,
@@ -165,7 +163,7 @@ def _generate_extract(tds_file_name, tde_file_name):
 
 
 def _print_result(tde_result, cols=80):
-    """
+    """Prints result of auto_extract command
 
     Parameters
     ----------
@@ -182,8 +180,8 @@ def _print_result(tde_result, cols=80):
         calculated by taking into account the names of all files,
         and maximum length of status to accommodate everything in a neat
         tabular form. Defaults to 80.
-
     """
+
     file_name = tde_result['local-path']
     file_status = tde_result['status']
     message = tde_result['msg']
@@ -197,7 +195,8 @@ def _print_result(tde_result, cols=80):
 
 
 def _compute_cols(files):
-    """
+    """Computes max required length for output
+
     From all the file names and maximum length of _status constant text,
     determines the maximum length a line can have in the result.
 
@@ -223,8 +222,8 @@ def _compute_cols(files):
     >>> s += 'abcdabcdabcd...Success' + os.linesep
     >>> _compute_cols(files) == len(s)
     True
-
     """
+
     if files:
         name_len = max(len(current_file) for current_file in files)
     else:
