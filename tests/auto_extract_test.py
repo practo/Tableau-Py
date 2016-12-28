@@ -16,8 +16,6 @@ import unittest
 from click.testing import CliRunner
 
 from auto_extract.cli import main
-from auto_extract import constants
-from auto_extract import error_messages as err_msgs
 from auto_extract.exceptions import AutoExtractException
 import config
 
@@ -76,7 +74,7 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     """
 
-    PROGRESS_TEXT_PATTERN = re.compile('^{}\n'.format(constants.PROGRESS_TEXT))
+    PROGRESS_TEXT_PATTERN = re.compile('^Processing datasource files\n')
     SUCCESS_PATTERN = re.compile('\\.+Success\n')
     FAILED_PATTERN = re.compile('\\.+Failed\n')
 
@@ -242,7 +240,7 @@ class TestAutoExtractCommand(unittest.TestCase):
                     'text': 'Failed'
                 },
                 'local-path': 'sample.tde',
-                'msg': err_msgs.FILE_NOT_TDS.format('sample.tde')
+                'msg': '\'sample.tde\': does not have extension `.tds`'
             }
         ]
 

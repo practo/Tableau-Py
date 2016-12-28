@@ -23,6 +23,8 @@ _RES_STATUS = 'status'
 _RES_LOCAL_PATH = 'local-path'
 _RES_MSG = 'msg'
 
+_PROGRESS_TEXT = 'Processing datasource files'
+
 
 @click.command(name='auto_extract')  # noqa: C901
 @click.option('-o', '--output-dir', type=click.Path(),
@@ -59,7 +61,7 @@ def main(files, overwrite, prefix, suffix, output_dir):
     if output_dir is not None:
         absolute_output_dir = Path(output_dir).resolve()
 
-    with click.progressbar(files, label=constants.PROGRESS_TEXT) as file_names:
+    with click.progressbar(files, label=_PROGRESS_TEXT) as file_names:
         for file_name in file_names:
             absolute_path = str(Path(file_name).resolve())
 

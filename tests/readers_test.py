@@ -18,7 +18,6 @@ from tableausdk.Extract import TableDefinition
 import yaml
 
 from auto_extract.content_handlers import TDSContentHandler
-from auto_extract import error_messages as err_msgs
 from auto_extract.readers import TDSReader
 import config
 
@@ -48,20 +47,18 @@ class TestTDSReader(unittest.TestCase):
         * Raises IOError when file given does not have .tds extension in name
 
         """
-        test_filename = os.path.join(config.SAMPLE_PATH, 'randome file.tds')
-        expected_regexp = err_msgs.FILE_NO_EXISTS.format(test_filename)
+        expected_regexp = '\'sample/randome file.tds\': file does not exists'
         with self.assertRaisesRegexp(IOError, expected_regexp):
+            test_filename = os.path.join(config.SAMPLE_PATH, 'randome file.tds')
             self.reader.read(test_filename)
 
-        test_filename = config.SAMPLE_PATH
-        expected_regexp = err_msgs.NOT_FILE.format(test_filename)
+        expected_regexp = '\'sample\': not a file'
         with self.assertRaisesRegexp(IOError, expected_regexp):
-            self.reader.read(test_filename)
+            self.reader.read(config.SAMPLE_PATH)
 
-        test_filename = 'tox.ini'
-        expected_regexp = err_msgs.FILE_NOT_TDS.format(test_filename)
+        expected_regexp = '\'tox.ini\': does not have extension `.tds`'
         with self.assertRaisesRegexp(IOError, expected_regexp):
-            self.reader.read(test_filename)
+            self.reader.read('tox.ini')
 
     def _assert_metadata(self, metadata, expected_length, expected_value):
         """
