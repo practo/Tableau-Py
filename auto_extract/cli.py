@@ -20,7 +20,7 @@ from auto_extract.exceptions import AutoExtractException
 from auto_extract.readers import TDSReader
 
 
-@click.command(name='auto_extract')
+@click.command(name='auto_extract')  # noqa: C901
 @click.option('-o', '--output-dir', type=click.Path(),
               help='Output directory for generated files')
 @click.option('-s', '--suffix', default='',
