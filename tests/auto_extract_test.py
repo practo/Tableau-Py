@@ -23,7 +23,8 @@ RUNNER = CliRunner()
 
 
 def isolated_filesystem(func):
-    """
+    """Isolated Filesystem decorator
+
     Gives isolated filesystem for auto_extract test to run
     thus not polluting the current filesystem
 
@@ -41,7 +42,6 @@ def isolated_filesystem(func):
     -------
     * Original tableau datasource file is not deleted
     * Original tableau datasource file is not modified
-
     """
 
     def wrapper(*args, **kwargs):
@@ -60,8 +60,7 @@ def isolated_filesystem(func):
 
 
 class TestAutoExtractCommand(unittest.TestCase):
-    """
-    Unit Test Cases for auto_extract command
+    """Unit Test Cases for auto_extract command
 
     DATA
     ----
@@ -71,7 +70,6 @@ class TestAutoExtractCommand(unittest.TestCase):
         tests the presence of Success in output
     FAILED_PATTERN : re
         tests the presence of Failed in output
-
     """
 
     PROGRESS_TEXT_PATTERN = re.compile('^Processing datasource files\n')
@@ -80,37 +78,43 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_help(self):
-        """
-        Asserts:
-            * Help works without any error
-            * Progress text is not displayed
+        """Tests help option
 
+        Asserts
+        -------
+        * Help works without any error
+        * Progress text is not displayed
         """
+
         result = RUNNER.invoke(main, ['--help'])
         assert result.exit_code == 0
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 0
 
     @isolated_filesystem
     def test_without_argument(self):
-        """
-        Asserts:
-            * Command works without any arguments
-            * Progress text is displayed
+        """Tests without argument
 
+        Asserts
+        -------
+        * Command works without any arguments
+        * Progress text is displayed
         """
+
         result = RUNNER.invoke(main)
         assert result.exit_code == 0
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
 
     @isolated_filesystem
     def test_with_single_file(self):
-        """
-        Asserts:
-            * Progress text is displayed
-            * Extract file exists
-            * Success is displayed
+        """Tests with single file
 
+        Asserts
+        -------
+        * Progress text is displayed
+        * Extract file exists
+        * Success is displayed
         """
+
         result = RUNNER.invoke(main, ['sample.tds'])
         assert result.exit_code == 0
         assert os.path.exists('sample.tde')
@@ -119,12 +123,14 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_wrong_filename(self):
-        """
-        Asserts:
-            * Progress text is displayed
-            * OSError is thrown
+        """Tests with wrong filename
 
+        Asserts
+        -------
+        * Progress text is displayed
+        * OSError is thrown
         """
+
         result = RUNNER.invoke(main, ['sample1.tds'])
         assert result.exit_code == -1
         assert isinstance(result.exception, OSError)
@@ -132,27 +138,31 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_single_file_multiple_times(self):  # pylint: disable=locally-disabled,invalid-name
-        """
-        Asserts:
-            * Should not throw error when same file is mentioned multiple times
-            * Progress text is displayed
+        """Tests with single file passed as multiple params
 
+        Asserts
+        -------
+        * Should not throw error when same file is mentioned multiple times
+        * Progress text is displayed
         """
+
         result = RUNNER.invoke(main, ['sample.tds', 'sample.tds'])
         assert result.exit_code == 0
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
 
     @isolated_filesystem
     def test_with_multiple_files(self):
-        """
-        Asserts:
-            * 2 different files can be invoked at the sample time
-            * Progress text is displayed
-            * 2 files are generated
-            * Success if returned for both the files
-            * Failed is not printed
+        """Tests with multiple files as argument
 
+        Asserts
+        -------
+        * 2 different files can be invoked at the sample time
+        * Progress text is displayed
+        * 2 files are generated
+        * Success if returned for both the files
+        * Failed is not printed
         """
+
         shutil.copy('sample.tds', 'sample1.tds')
         result = RUNNER.invoke(main, ['sample.tds', 'sample1.tds'])
         assert result.exit_code == 0
@@ -164,15 +174,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_multiple_calls_without_overwrite(self):  # pylint: disable=locally-disabled,invalid-name
-        """
-        Asserts:
-            * If tde already exists with same table name give error
-            * Progress text is displayed
-            * Error Message and Failed object
-            * Failed is printed
-            * Success is not printed
+        """Tests with multiple calls on a file without overwrite option
 
+        Asserts
+        -------
+        * If tde already exists with same table name give error
+        * Progress text is displayed
+        * Error Message and Failed object
+        * Failed is printed
+        * Success is not printed
         """
+
         RUNNER.invoke(main, ['sample.tds'])
         result = RUNNER.invoke(main, ['sample.tds'])
         assert result.exit_code == -1
@@ -193,15 +205,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_overwrite(self):
-        """
-        Asserts:
-            * Overwrite option works
-            * Progress is displayed
-            * File is generated
-            * Success is printed both the times
-            * Failed is not printed both times
+        """Tests with multiple calls on a file with overwrite option
 
+        Asserts
+        -------
+        * Overwrite option works
+        * Progress is displayed
+        * File is generated
+        * Success is printed both the times
+        * Failed is not printed both times
         """
+
         result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
         assert result.exit_code == 0
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
@@ -217,15 +231,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_any_other_extension(self):
-        """
-        Asserts:
-            * Gives error with any other extension file
-            * Progress text is displayed
-            * Throws errors and the error message
-            * Success is not printed
-            * 1 Failed is printed
+        """Tests with filename having non *.tds extension
 
+        Asserts
+        -------
+        * Gives error with any other extension file
+        * Progress text is displayed
+        * Throws errors and the error message
+        * Success is not printed
+        * 1 Failed is printed
         """
+
         RUNNER.invoke(main, ['sample.tds'])
         result = RUNNER.invoke(main, ['sample.tde'])
         assert result.exit_code == -1
@@ -246,15 +262,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_suffix(self):
-        """
-        Asserts:
-            * Runs successfully when suffix option is given
-            * Progress text is displayed
-            * Success is printed
-            * Failed is not printed
-            * Generated file with suffix exists
+        """Tests with suffix option
 
+        Asserts
+        -------
+        * Runs successfully when suffix option is given
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file with suffix exists
         """
+
         result = RUNNER.invoke(main, ['--suffix', '_TDE', 'sample.tds'])
         assert result.exit_code == 0
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
@@ -264,15 +282,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_prefix(self):
-        """
-        Asserts:
-            * Runs successfully when prefix option is given
-            * Progress text is displayed
-            * Success is printed
-            * Failed is not printed
-            * Generated file with prefix exists
+        """Tests with prefix option
 
+        Asserts
+        -------
+        * Runs successfully when prefix option is given
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file with prefix exists
         """
+
         result = RUNNER.invoke(main, ['--prefix', 'TDE_', 'sample.tds'])
         assert result.exit_code == 0
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
@@ -282,15 +302,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_prefix_and_suffix(self):
-        """
-        Asserts:
-            * Runs successfully when prefix and suffix option is given
-            * Progress text is displayed
-            * Success is printed
-            * Failed is not printed
-            * Generated file with prefix and suffix exists
+        """Tests with both prefix and suffix option
 
+        Asserts
+        -------
+        * Runs successfully when prefix and suffix option is given
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file with prefix and suffix exists
         """
+
         result = RUNNER.invoke(main, ['--prefix', 'TDE_', '--suffix', '_TDE', 'sample.tds'])
         assert result.exit_code == 0
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
@@ -300,12 +322,14 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_output_dir_when_not_exist(self):  # pylint: disable=locally-disabled,invalid-name
-        """
-        Asserts:
-            * completes unsuccessfully with OSError
-            * File is not created
+        """Tests with output dir option when it doesn't exists
 
+        Asserts
+        -------
+        * completes unsuccessfully with OSError
+        * File is not created
         """
+
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
         assert result.exit_code == -1
         assert not os.path.exists(os.path.join('temp', 'sample.tde'))
@@ -314,15 +338,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
     @isolated_filesystem
     def test_with_output_dir_when_exist(self):
-        """
-        Asserts:
-            * completes successfully
-            * Progress text is displayed
-            * Success is printed
-            * Failed is not printed
-            * Generated file is saved in temporary folder
+        """Tests with output dir option when it exists
 
+        Asserts
+        -------
+        * completes successfully
+        * Progress text is displayed
+        * Success is printed
+        * Failed is not printed
+        * Generated file is saved in temporary folder
         """
+
         os.mkdir('temp')
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
         assert result.exit_code == 0
