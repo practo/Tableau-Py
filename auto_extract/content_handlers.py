@@ -8,6 +8,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from auto_extract import constants
 from auto_extract.xml_as_dictionary import XmlDictConfig
 
 
@@ -16,6 +17,12 @@ class TDSContentHandler(object):
     Represents an object containing parsed information from a tableau datasource file
 
     """
+
+    _col_def_keys = [
+        constants.COL_DEF_PARENT_NAME,
+        constants.COL_DEF_LOCAL_NAME,
+        constants.COL_DEF_LOCAL_TYPE,
+    ]
 
     def __init__(self):
         super(TDSContentHandler, self).__init__()
@@ -62,11 +69,10 @@ class TDSContentHandler(object):
         True
 
         """
-        return map(lambda x: {
-            'parent-name': x.get('parent-name'),
-            'local-name': x.get('local-name'),
-            'local-type': x.get('local-type')
-        }, self._tds_columns)
+        return [
+            {key: column[key] for key in self._col_def_keys}
+            for column in self._tds_columns
+        ]
 
     @property
     def metadata(self):
