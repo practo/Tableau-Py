@@ -19,6 +19,10 @@ from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.exceptions import AutoExtractException
 from auto_extract.readers import TDSReader
 
+_RES_STATUS = 'status'
+_RES_LOCAL_PATH = 'local-path'
+_RES_MSG = 'msg'
+
 
 @click.command(name='auto_extract')  # noqa: C901
 @click.option('-o', '--output-dir', type=click.Path(),
@@ -75,7 +79,7 @@ def main(files, overwrite, prefix, suffix, output_dir):
 
     failed = False
     for key in tde_success_map:
-        if tde_success_map[key]['status'] == _status.FAILED:
+        if tde_success_map[key][_RES_STATUS] == _status.FAILED:
             failed = True
         _print_result(tde_success_map[key], cols=cols)
 
@@ -136,9 +140,9 @@ def _generate_extract(tds_file_name, tde_file_name):
 
     new_extract = Extract(tde_file_name)
     result = {
-        'status': _status.FAILED,
-        'local-path': tds_file_name,
-        'msg': ''
+        _RES_STATUS: _status.FAILED,
+        _RES_LOCAL_PATH: tds_file_name,
+        _RES_MSG: ''
     }
 
     try:
@@ -153,11 +157,11 @@ def _generate_extract(tds_file_name, tde_file_name):
         new_extract.close()
         table_definition.close()
 
-        result['status'] = _status.SUCCESS
+        result[_RES_STATUS] = _status.SUCCESS
     except (IOError, OSError) as err:
-        result['msg'] = str(err)
+        result[_RES_MSG] = str(err)
     except TableauException:
-        result['msg'] = GetLastErrorMessage()
+        result[_RES_MSG] = GetLastErrorMessage()
 
     return result
 
@@ -182,9 +186,9 @@ def _print_result(tde_result, cols=80):
         tabular form. Defaults to 80.
     """
 
-    file_name = tde_result['local-path']
-    file_status = tde_result['status']
-    message = tde_result['msg']
+    file_name = tde_result[_RES_LOCAL_PATH]
+    file_status = tde_result[_RES_STATUS]
+    message = tde_result[_RES_MSG]
 
     dots = '.' * (cols - len(file_name) - len(file_status.get('text')) - 1)
     click.echo(file_name + dots, nl=False)
