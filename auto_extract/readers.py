@@ -15,7 +15,7 @@ from tableausdk.Extract import TableDefinition
 from tableausdk.Types import Collation
 from tableausdk.Types import Type
 
-from auto_extract import constants
+from auto_extract import _constants
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract import error_messages as err_msgs
 
@@ -191,7 +191,7 @@ class TDSReader(object):
         if not os.access(absolute_path, os.R_OK):
             raise IOError(err_msgs.NOT_READABLE.format(tds_file))
 
-        if tds_file_path.suffix != constants.TDS_EXTENSION:
+        if tds_file_path.suffix != _constants.TDS_EXTENSION:
             raise IOError(err_msgs.FILE_NOT_TDS.format(tds_file))
 
         tree = etree.parse(absolute_path, parser=self._parser)

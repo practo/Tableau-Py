@@ -14,7 +14,7 @@ from tableausdk.Extract import Extract
 from tableausdk.Extract import ExtractAPI
 
 from auto_extract import _status
-from auto_extract import constants
+from auto_extract import _constants
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.exceptions import AutoExtractException
 from auto_extract.readers import TDSReader
@@ -111,7 +111,7 @@ def _get_tde_path(prefix, tds_file_name, suffix):
     tds_path = Path(tds_file_name)
     tde_file_name = prefix + tds_path.stem + suffix
     tde_path = tds_path.with_name(tde_file_name)
-    tde_path = tde_path.with_suffix(constants.TDE_EXTENSION)
+    tde_path = tde_path.with_suffix(_constants.TDE_EXTENSION)
 
     return tde_path
 
