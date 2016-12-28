@@ -9,7 +9,15 @@ from __future__ import division
 from __future__ import print_function
 
 from auto_extract import constants
+from auto_extract import error_messages as err_msgs
 from auto_extract.xml_as_dictionary import XmlDictConfig
+
+
+class TDSParseException(Exception):
+    """Exception for tds parsing related issues"""
+
+    def __init__(self, *args, **kwargs):
+        super(TDSParseException, self).__init__(*args, **kwargs)
 
 
 class TDSContentHandler(object):
@@ -127,15 +135,18 @@ class TDSContentHandler(object):
 
         Raises
         ------
-        AssertionError
-            when datasource information is empty,
-            when there are more than 1 connections,
-            and when connection information is empty
+        TDSParseException
+            when datasource infromation is empty,
+            when connection information is empty,
+            when more than 1 connection information is available
         """
 
         datasource = dict(tds_xml.attrib)
 
-        assert len(datasource) != 0, 'datasource information is empty'
+        if len(datasource) == 0:
+            raise TDSParseException(
+                err_msgs.EMPTY_INFORMATION.format('datasource')
+            )
 
         connection_path = '/'.join([
             'connection',
@@ -148,16 +159,21 @@ class TDSContentHandler(object):
         for connection in tds_xml.iterfind(connection_path):
             connections.append(connection.attrib)
 
-        assert len(connections) == 1, \
-            'expected number of connections to be {}, got {}'.format(
-                1, len(connections)
+        if len(connections) != 1:
+            raise TDSParseException(
+                err_msgs.UNEXPECTED_COUNT.format(
+                    'connection', 1, len(connections)
+                )
             )
 
         # dict because the lxml.etree.Element.attrib represents a dictionary
         # like class instance but not dictionary
         connection = dict(connections[0])
 
-        assert len(connection) != 0, 'connection information is empty'
+        if len(connection) == 0:
+            raise TDSParseException(
+                err_msgs.EMPTY_INFORMATION.format('connection')
+            )
 
         metadata_record_path = '/'.join([
             'connection',

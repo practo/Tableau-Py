@@ -19,7 +19,7 @@ import lxml.etree as etree
 import yaml
 
 from auto_extract.content_handlers import TDSContentHandler
-
+from auto_extract.content_handlers import TDSParseException
 
 class TestTDSContentHandler(unittest.TestCase):
     """
@@ -50,7 +50,7 @@ class TestTDSContentHandler(unittest.TestCase):
             * If after raise column_definitions property is empty list
 
         """
-        with self.assertRaisesRegexp(AssertionError, regex_match):
+        with self.assertRaisesRegexp(TDSParseException, regex_match):
             self.content_handler.parse(tds_xml)
 
         self.assertIsNotNone(self.content_handler.metadata)
@@ -67,7 +67,7 @@ class TestTDSContentHandler(unittest.TestCase):
         gives assertion error
 
         """
-        self._check_error(tds_xml, 'datasource information is empty')
+        self._check_error(tds_xml, '\'datasource\': information is empty')
 
     def _fail_on_missing_inside_connection(self, tds_xml):  # pylint: disable=locally-disabled,invalid-name
         """
@@ -75,7 +75,7 @@ class TestTDSContentHandler(unittest.TestCase):
         gives assertion error
 
         """
-        self._check_error(tds_xml, 'expected number of connections to be 1, got 0')
+        self._check_error(tds_xml, 'expected count of connection to be 1, got 0')
 
     def _fail_on_multiple_connections(self, tds_xml, element):  # pylint: disable=locally-disabled,invalid-name
         """
@@ -87,7 +87,7 @@ class TestTDSContentHandler(unittest.TestCase):
         parent = element.getparent()
         element_copy = deepcopy(element)
         parent.append(element_copy)
-        self._check_error(tds_xml, 'expected number of connections to be 1, got 2')
+        self._check_error(tds_xml, 'expected count of connection to be 1, got 2')
         parent.remove(element_copy)
 
     def test_parse_without_datasource_information(self):  # pylint: disable=locally-disabled,invalid-name
@@ -142,7 +142,7 @@ class TestTDSContentHandler(unittest.TestCase):
         connection_inside = etree.Element('connection')
         named_connection.append(connection_inside)
 
-        with self.assertRaisesRegexp(AssertionError, 'connection information is empty'):
+        with self.assertRaisesRegexp(TDSParseException, '\'connection\': information is empty'):
             self.content_handler.parse(tds_xml)
 
         connection_inside.attrib.update({
@@ -151,8 +151,8 @@ class TestTDSContentHandler(unittest.TestCase):
 
         try:
             self.content_handler.parse(tds_xml)
-        except AssertionError:
-            self.fail('parse() raised AssertionError unexpectedly')
+        except TDSParseException:
+            self.fail('parse() raised TDSParseException unexpectedly')
 
     def test_parse_with_multiple_connections(self):  # pylint: disable=locally-disabled,invalid-name
         """
@@ -193,8 +193,8 @@ class TestTDSContentHandler(unittest.TestCase):
 
         try:
             self.content_handler.parse(tds_xml)
-        except AssertionError:
-            self.fail('parse() raised AssertionError unexpectedly')
+        except TDSParseException:
+            self.fail('parse() raised TDSParseException unexpectedly')
 
     def test_parse_stale_value(self):
         """
@@ -207,15 +207,15 @@ class TestTDSContentHandler(unittest.TestCase):
 
         try:
             self.content_handler.parse(tds_xml)
-        except AssertionError:
-            self.fail('parse() raised AssertionError unexpectedly')
+        except TDSParseException:
+            self.fail('parse() raised TDSParseException unexpectedly')
 
         metadata = self.content_handler.metadata
         column_definitions = self.content_handler.column_definitions
 
         tds_xml = etree.Element('element')
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TDSParseException):
             self.content_handler.parse(tds_xml)
 
         self.assertIsNotNone(metadata)

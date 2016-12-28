@@ -10,3 +10,6 @@ NOT_READABLE = '{!r}: not readable'
 FILE_NOT_TDS = '{!r}: does not have extension `.tds`'
 
 IS_NONE = '{} is None'
+
+UNEXPECTED_COUNT = 'expected count of {} to be {}, got {}'
+EMPTY_INFORMATION = '{!r}: information is empty'
