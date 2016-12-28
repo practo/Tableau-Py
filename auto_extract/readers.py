@@ -158,7 +158,8 @@ class TDSReader(object):
             when `tds_file` is not readable
         :py:exc:`~lxml.etree.XMLSchemaParseError`
             when `tds_file` is not xml parsable
-
+        :py:exc:`~auto_extract.content_handlers.TDSParseException`
+            when not able to parse tableau datasource file
 
         Examples
         --------
