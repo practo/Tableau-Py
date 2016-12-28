@@ -25,6 +25,10 @@ class TDSContentHandler(object):
     K_COL_DEF_PARENT_NAME = 'parent-name'
     K_COL_DEF_LOCAL_NAME = 'local-name'
     K_COL_DEF_LOCAL_TYPE = 'local-type'
+
+    K_METADATA_DATASOURCE = 'datasource'
+    K_METADATA_CONNECTION = 'connection'
+
     _col_def_keys = [
         K_COL_DEF_PARENT_NAME,
         K_COL_DEF_LOCAL_NAME,
@@ -147,7 +151,7 @@ class TDSContentHandler(object):
 
         if len(datasource) == 0:
             raise TDSParseException(
-                err_msgs.EMPTY_INFORMATION.format('datasource')
+                err_msgs.EMPTY_INFORMATION.format(self.K_METADATA_DATASOURCE)
             )
 
         connection_path = '/'.join([
@@ -164,7 +168,7 @@ class TDSContentHandler(object):
         if len(connections) != 1:
             raise TDSParseException(
                 err_msgs.UNEXPECTED_COUNT.format(
-                    'connection', 1, len(connections)
+                    self.K_METADATA_CONNECTION, 1, len(connections)
                 )
             )
 
@@ -174,7 +178,7 @@ class TDSContentHandler(object):
 
         if len(connection) == 0:
             raise TDSParseException(
-                err_msgs.EMPTY_INFORMATION.format('connection')
+                err_msgs.EMPTY_INFORMATION.format(self.K_METADATA_CONNECTION)
             )
 
         metadata_record_path = '/'.join([
@@ -188,8 +192,8 @@ class TDSContentHandler(object):
             columns.append(XmlDictConfig(metadata_record))
 
         self._tds_metadata = {
-            'datasource': datasource,
-            'connection': connection,
+            self.K_METADATA_DATASOURCE: datasource,
+            self.K_METADATA_CONNECTION: connection,
         }
 
         self._tds_columns = columns
