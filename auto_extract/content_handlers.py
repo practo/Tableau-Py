@@ -11,7 +11,7 @@ from __future__ import print_function
 import lxml.etree as etree
 import xmltodict
 
-from auto_extract import error_messages as err_msgs
+from auto_extract import _error_messages as err_msgs
 
 
 class TDSParseException(Exception):
