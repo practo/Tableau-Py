@@ -8,14 +8,38 @@ from __future__ import print_function
 
 from auto_extract import _color
 
+
+class Status(dict):
+    """Status class
+
+    Defines the result status for auto_extract command
+
+    Attributes
+    ----------
+    text: str
+        text to display
+    color: str
+        background color of the text
+    """
+
+    def __init__(self, text, color):
+        super(Status, self).__init__()
+        self['color'] = color
+        self['text'] = text
+
+    @property
+    def color(self):
+        """color property"""
+        return self['color']
+
+    @property
+    def text(self):
+        """text property"""
+        return self['text']
+
+
 #: Success status
-SUCCESS = {
-    'text': 'Success',
-    'color': _color.GREEN
-}
+SUCCESS = Status('Success', _color.GREEN)
 
 #: Failed status
-FAILED = {
-    'text': 'Failed',
-    'color': _color.RED
-}
+FAILED = Status('Failed', _color.RED)

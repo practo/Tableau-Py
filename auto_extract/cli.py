@@ -190,9 +190,9 @@ def _print_result(tde_result, cols=80):
     file_status = tde_result[_RES_STATUS]
     message = tde_result[_RES_MSG]
 
-    dots = '.' * (cols - len(file_name) - len(file_status.get('text')) - 1)
+    dots = '.' * (cols - len(file_name) - len(file_status.text) - 1)
     click.echo(file_name + dots, nl=False)
-    click.secho(file_status.get('text'), bg=file_status.get('color'))
+    click.secho(file_status.text, bg=file_status.color)
 
     if message:
         click.echo(message)
@@ -233,7 +233,7 @@ def _compute_cols(files):
     else:
         name_len = 0
 
-    cols = name_len + 3 + len(_status.SUCCESS['text']) + 1
+    cols = name_len + 3 + len(_status.SUCCESS.text) + 1
     return max(cols, 80)
 
 
