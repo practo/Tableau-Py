@@ -34,6 +34,7 @@ Submodules
 .. automodule:: auto_extract.exceptions
     :members:
     :undoc-members:
+    :show-inheritance:
 
 Module contents
 ---------------
