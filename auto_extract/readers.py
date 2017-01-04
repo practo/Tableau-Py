@@ -119,6 +119,7 @@ class TDSReader(object):
         Returns
         -------
         TDSContentHandler.column_definitions
+            column information of datasource file read
 
         Examples
         --------
@@ -138,6 +139,7 @@ class TDSReader(object):
         Returns
         -------
         TDSContentHandler.metadata
+            metadata information of datasource file read
 
         Examples
         --------
@@ -162,7 +164,7 @@ class TDSReader(object):
 
         Raises
         ------
-        :py:exc:`~exceptions.OSError`
+        :py:exc:`~exceptions.IOError`
             when `tds_file` is not readable
         :py:exc:`~lxml.etree.XMLSchemaParseError`
             when `tds_file` is not xml parsable

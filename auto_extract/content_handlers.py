@@ -49,8 +49,6 @@ class TDSContentHandler(object):
     def column_definitions(self):
         """Column Definitions property
 
-        Column Definitions parsed from tableau datasource file
-
         Returns
         -------
         list
@@ -90,8 +88,6 @@ class TDSContentHandler(object):
     @property
     def metadata(self):
         """Metadata property
-
-        Metadata information of parsed tableau datasource
 
         Returns
         -------
