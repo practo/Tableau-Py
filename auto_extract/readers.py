@@ -55,7 +55,7 @@ class TDSReader(object):
 
         Parameters
         ----------
-        collation: :py:attr:`~tableausdk.Types.Collation`, optional
+        collation : :py:attr:`~tableausdk.Types.Collation`, optional
             collation to be used for all columns of the table
             (default value is :py:attr:`~tableausdk.Types.Collation.EN_US_CI`)
 

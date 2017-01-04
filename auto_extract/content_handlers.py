@@ -39,10 +39,10 @@ class TDSContentHandler(object):
     def __init__(self):
         super(TDSContentHandler, self).__init__()
 
-        #: dict: tableau datasource metadata
+        #: dict : tableau datasource metadata
         self._tds_metadata = dict()
 
-        #: list[dict]: tableau datasource column information
+        #: list[dict] : tableau datasource column information
         self._tds_columns = list()
 
     @property

@@ -16,9 +16,9 @@ class Status(dict):
 
     Attributes
     ----------
-    text: str
+    text : str
         text to display
-    color: str
+    color : str
         background color of the text
     """
 
