@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-This module defines xml content handlers for parsing tableau files into
-python objects
+"""This module defines xml content handlers for parsing tableau
+files into python objects
 """
 
 from __future__ import absolute_import

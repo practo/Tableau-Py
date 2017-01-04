@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-This module defines xml readers for tableau files
+"""This module defines xml readers for tableau files
 """
 
 from __future__ import absolute_import

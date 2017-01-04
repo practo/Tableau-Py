@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-This module defines exceptions for auto_extract package
+"""This module defines exceptions for auto_extract package
 """
 
 from __future__ import absolute_import
