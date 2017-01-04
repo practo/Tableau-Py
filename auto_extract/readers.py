@@ -15,8 +15,8 @@ from tableausdk.Types import Collation
 from tableausdk.Types import Type
 
 from auto_extract import _constants
-from auto_extract.content_handlers import TDSContentHandler
 from auto_extract import _error_messages as err_msgs
+from auto_extract.content_handlers import TDSContentHandler
 
 
 class TDSReader(object):
