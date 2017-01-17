@@ -12,9 +12,11 @@ from __future__ import division
 from __future__ import print_function
 
 from auto_extract.readers.exceptions import ReaderException
+from auto_extract.readers.Reader import Reader
 from auto_extract.readers.TDSReader import TDSReader
 
 __all__ = [
+    'Reader',
     'ReaderException',
     'TDSReader',
 ]

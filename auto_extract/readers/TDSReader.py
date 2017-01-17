@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os
 import sys
 
 import lxml.etree as etree
@@ -20,9 +19,10 @@ from auto_extract import _error_messages as err_msgs
 from auto_extract.content_handlers import ContentHandlerException
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.readers.exceptions import ReaderException
+from auto_extract.readers.Reader import Reader
 
 
-class TDSReader(object):
+class TDSReader(Reader):
     """Reader class for Tableau datasource files (\\*.tds)
 
     Parameters
@@ -45,7 +45,7 @@ class TDSReader(object):
     }
 
     def __init__(self, xml_content_handler):
-        super(TDSReader, self).__init__()
+        super(TDSReader, self).__init__(_constants.TDS_EXTENSION)
         self._xml_content_handler = xml_content_handler
 
     def define_table(self, collation=Collation.EN_US_CI):
@@ -168,7 +168,7 @@ class TDSReader(object):
         Raises
         ------
         ReaderException
-            when `tds_file` is not parsable
+            when `tds_file` is not parsable or readable
 
         Examples
         --------
@@ -178,27 +178,13 @@ class TDSReader(object):
         >>> tds_reader.read('sample/sample.tds')
         """
 
-        tds_file_path = Path(tds_file)
+        super(TDSReader, self).check_file_readable(tds_file)
 
         try:
-            if not tds_file_path.exists():
-                raise IOError(err_msgs.FILE_NO_EXISTS.format(tds_file))
-
-            absolute_path = str(tds_file_path.resolve())
-
-            if not tds_file_path.is_file():
-                raise IOError(err_msgs.NOT_FILE.format(tds_file))
-
-            if not os.access(absolute_path, os.R_OK):
-                raise IOError(err_msgs.NOT_READABLE.format(tds_file))
-
-            if tds_file_path.suffix != _constants.TDS_EXTENSION:
-                raise IOError(err_msgs.FILE_NOT_TDS.format(tds_file))
-
+            absolute_path = str(Path(tds_file).resolve())
             tree = etree.parse(absolute_path, parser=self._parser)
             root = tree.getroot()
+
             self._xml_content_handler.parse(root)
-        except (etree.XMLSchemaParseError,
-                IOError,
-                ContentHandlerException) as err:
+        except (etree.XMLSchemaParseError, ContentHandlerException) as err:
             reraise(ReaderException, str(err), sys.exc_info()[2])
