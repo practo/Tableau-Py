@@ -17,6 +17,7 @@ from auto_extract import _status
 from auto_extract import _constants
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.exceptions import AutoExtractException
+from auto_extract.readers import ReaderException
 from auto_extract.readers import TDSReader
 
 _RES_STATUS = 'status'
@@ -160,7 +161,7 @@ def _generate_extract(tds_file_name, tde_file_name):
         table_definition.close()
 
         result[_RES_STATUS] = _status.SUCCESS
-    except (IOError, OSError) as err:
+    except ReaderException as err:
         result[_RES_MSG] = str(err)
     except TableauException:
         result[_RES_MSG] = GetLastErrorMessage()

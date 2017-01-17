@@ -18,6 +18,7 @@ from tableausdk.Extract import TableDefinition
 import yaml
 
 from auto_extract.content_handlers import TDSContentHandler
+from auto_extract.readers import ReaderException
 from auto_extract.readers import TDSReader
 import config
 
@@ -41,23 +42,23 @@ class TestTDSReader(unittest.TestCase):
         """
         Asserts
         -------
-        * Raises IOError for missing file / directory
-        * Raises IOError when file expected but folder or something other
+        * Raises ReaderException for missing file / directory
+        * Raises ReaderException when file expected but folder or something other
           than file given
-        * Raises IOError when file given does not have .tds extension in name
+        * Raises ReaderException when file given does not have .tds extension in name
 
         """
         expected_regexp = '\'sample/randome file.tds\': file does not exists'
-        with self.assertRaisesRegexp(IOError, expected_regexp):
+        with self.assertRaisesRegexp(ReaderException, expected_regexp):
             test_filename = os.path.join(config.SAMPLE_PATH, 'randome file.tds')
             self.reader.read(test_filename)
 
         expected_regexp = '\'sample\': not a file'
-        with self.assertRaisesRegexp(IOError, expected_regexp):
+        with self.assertRaisesRegexp(ReaderException, expected_regexp):
             self.reader.read(config.SAMPLE_PATH)
 
         expected_regexp = '\'tox.ini\': does not have extension `.tds`'
-        with self.assertRaisesRegexp(IOError, expected_regexp):
+        with self.assertRaisesRegexp(ReaderException, expected_regexp):
             self.reader.read('tox.ini')
 
     def _assert_metadata(self, metadata, expected_length, expected_value):

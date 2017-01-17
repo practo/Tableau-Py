@@ -7,9 +7,11 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+import sys
 
 import lxml.etree as etree
 from pathlib2 import Path
+from six import reraise
 from tableausdk.Extract import TableDefinition
 from tableausdk.Types import Collation
 from tableausdk.Types import Type
@@ -17,6 +19,14 @@ from tableausdk.Types import Type
 from auto_extract import _constants
 from auto_extract import _error_messages as err_msgs
 from auto_extract.content_handlers import TDSContentHandler
+from auto_extract.content_handlers import TDSParseException
+
+
+class ReaderException(Exception):
+    """raised when an exception is thrown by a Reader"""
+
+    def __init__(self, *args, **kwargs):
+        super(ReaderException, self).__init__(*args, **kwargs)
 
 
 class TDSReader(object):
@@ -164,12 +174,8 @@ class TDSReader(object):
 
         Raises
         ------
-        :py:exc:`~exceptions.IOError`
-            when `tds_file` is not readable
-        :py:exc:`~lxml.etree.XMLSchemaParseError`
-            when `tds_file` is not xml parsable
-        :py:exc:`~auto_extract.content_handlers.TDSParseException`
-            when not able to parse tableau datasource file
+        ReaderException
+            when `tds_file` is not parsable
 
         Examples
         --------
@@ -181,21 +187,23 @@ class TDSReader(object):
 
         tds_file_path = Path(tds_file)
 
-        if not tds_file_path.exists():
-            raise IOError(err_msgs.FILE_NO_EXISTS.format(tds_file))
+        try:
+            if not tds_file_path.exists():
+                raise IOError(err_msgs.FILE_NO_EXISTS.format(tds_file))
 
-        absolute_path = str(tds_file_path.resolve())
+            absolute_path = str(tds_file_path.resolve())
 
-        if not tds_file_path.is_file():
-            raise IOError(err_msgs.NOT_FILE.format(tds_file))
+            if not tds_file_path.is_file():
+                raise IOError(err_msgs.NOT_FILE.format(tds_file))
 
-        if not os.access(absolute_path, os.R_OK):
-            raise IOError(err_msgs.NOT_READABLE.format(tds_file))
+            if not os.access(absolute_path, os.R_OK):
+                raise IOError(err_msgs.NOT_READABLE.format(tds_file))
 
-        if tds_file_path.suffix != _constants.TDS_EXTENSION:
-            raise IOError(err_msgs.FILE_NOT_TDS.format(tds_file))
+            if tds_file_path.suffix != _constants.TDS_EXTENSION:
+                raise IOError(err_msgs.FILE_NOT_TDS.format(tds_file))
 
-        tree = etree.parse(absolute_path, parser=self._parser)
-        root = tree.getroot()
-
-        self._xml_content_handler.parse(root)
+            tree = etree.parse(absolute_path, parser=self._parser)
+            root = tree.getroot()
+            self._xml_content_handler.parse(root)
+        except (etree.XMLSchemaParseError, IOError, TDSParseException) as err:
+            reraise(ReaderException, str(err), sys.exc_info()[2])

@@ -71,6 +71,7 @@ setup(
         'pathlib2',
         'click',
         'xmltodict',
+        'six',
     ],
     dependency_links=[
         tableau_sdk,
