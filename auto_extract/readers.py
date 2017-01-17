@@ -18,8 +18,8 @@ from tableausdk.Types import Type
 
 from auto_extract import _constants
 from auto_extract import _error_messages as err_msgs
+from auto_extract.content_handlers import ContentHandlerException
 from auto_extract.content_handlers import TDSContentHandler
-from auto_extract.content_handlers import TDSParseException
 
 
 class ReaderException(Exception):
@@ -205,5 +205,7 @@ class TDSReader(object):
             tree = etree.parse(absolute_path, parser=self._parser)
             root = tree.getroot()
             self._xml_content_handler.parse(root)
-        except (etree.XMLSchemaParseError, IOError, TDSParseException) as err:
+        except (etree.XMLSchemaParseError,
+                IOError,
+                ContentHandlerException) as err:
             reraise(ReaderException, str(err), sys.exc_info()[2])

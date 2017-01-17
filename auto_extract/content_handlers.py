@@ -13,11 +13,11 @@ import xmltodict
 from auto_extract import _error_messages as err_msgs
 
 
-class TDSParseException(Exception):
-    """Exception for tds parsing related issues"""
+class ContentHandlerException(Exception):
+    """raised when an exception is thrown by a ContentHandlers"""
 
     def __init__(self, *args, **kwargs):
-        super(TDSParseException, self).__init__(*args, **kwargs)
+        super(ContentHandlerException, self).__init__(*args, **kwargs)
 
 
 class TDSContentHandler(object):
@@ -138,7 +138,7 @@ class TDSContentHandler(object):
 
         Raises
         ------
-        TDSParseException
+        ContentHandlerException
             when datasource infromation is empty,
             when connection information is empty,
             when more than 1 connection information is available
@@ -147,7 +147,7 @@ class TDSContentHandler(object):
         datasource = dict(tds_xml.attrib)
 
         if len(datasource) == 0:
-            raise TDSParseException(
+            raise ContentHandlerException(
                 err_msgs.EMPTY_INFORMATION.format(self.K_METADATA_DATASOURCE)
             )
 
@@ -163,7 +163,7 @@ class TDSContentHandler(object):
             connections.append(connection.attrib)
 
         if len(connections) != 1:
-            raise TDSParseException(
+            raise ContentHandlerException(
                 err_msgs.UNEXPECTED_COUNT.format(
                     self.K_METADATA_CONNECTION, 1, len(connections)
                 )
@@ -174,7 +174,7 @@ class TDSContentHandler(object):
         connection = dict(connections[0])
 
         if len(connection) == 0:
-            raise TDSParseException(
+            raise ContentHandlerException(
                 err_msgs.EMPTY_INFORMATION.format(self.K_METADATA_CONNECTION)
             )
 

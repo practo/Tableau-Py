@@ -18,8 +18,8 @@ import unittest
 import lxml.etree as etree
 import yaml
 
+from auto_extract.content_handlers import ContentHandlerException
 from auto_extract.content_handlers import TDSContentHandler
-from auto_extract.content_handlers import TDSParseException
 
 class TestTDSContentHandler(unittest.TestCase):
     """
@@ -50,7 +50,7 @@ class TestTDSContentHandler(unittest.TestCase):
             * If after raise column_definitions property is empty list
 
         """
-        with self.assertRaisesRegexp(TDSParseException, regex_match):
+        with self.assertRaisesRegexp(ContentHandlerException, regex_match):
             self.content_handler.parse(tds_xml)
 
         self.assertIsNotNone(self.content_handler.metadata)
@@ -142,7 +142,7 @@ class TestTDSContentHandler(unittest.TestCase):
         connection_inside = etree.Element('connection')
         named_connection.append(connection_inside)
 
-        with self.assertRaisesRegexp(TDSParseException, '\'connection\': information is empty'):
+        with self.assertRaisesRegexp(ContentHandlerException, '\'connection\': information is empty'):
             self.content_handler.parse(tds_xml)
 
         connection_inside.attrib.update({
@@ -151,8 +151,8 @@ class TestTDSContentHandler(unittest.TestCase):
 
         try:
             self.content_handler.parse(tds_xml)
-        except TDSParseException:
-            self.fail('parse() raised TDSParseException unexpectedly')
+        except ContentHandlerException:
+            self.fail('parse() raised ContentHandlerException unexpectedly')
 
     def test_parse_with_multiple_connections(self):  # pylint: disable=locally-disabled,invalid-name
         """
@@ -193,8 +193,8 @@ class TestTDSContentHandler(unittest.TestCase):
 
         try:
             self.content_handler.parse(tds_xml)
-        except TDSParseException:
-            self.fail('parse() raised TDSParseException unexpectedly')
+        except ContentHandlerException:
+            self.fail('parse() raised ContentHandlerException unexpectedly')
 
     def test_parse_stale_value(self):
         """
@@ -207,15 +207,15 @@ class TestTDSContentHandler(unittest.TestCase):
 
         try:
             self.content_handler.parse(tds_xml)
-        except TDSParseException:
-            self.fail('parse() raised TDSParseException unexpectedly')
+        except ContentHandlerException:
+            self.fail('parse() raised ContentHandlerException unexpectedly')
 
         metadata = self.content_handler.metadata
         column_definitions = self.content_handler.column_definitions
 
         tds_xml = etree.Element('element')
 
-        with self.assertRaises(TDSParseException):
+        with self.assertRaises(ContentHandlerException):
             self.content_handler.parse(tds_xml)
 
         self.assertIsNotNone(metadata)
