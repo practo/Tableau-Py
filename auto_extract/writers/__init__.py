@@ -10,7 +10,9 @@ from __future__ import division
 from __future__ import print_function
 
 from auto_extract.writers.exceptions import WriterException
+from auto_extract.writers.Writer import Writer
 
 __all__ = [
     'WriterException',
+    'Writer',
 ]

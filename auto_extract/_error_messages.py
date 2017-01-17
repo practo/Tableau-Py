@@ -9,6 +9,7 @@ FILE_NO_EXISTS = '{!r}: file does not exists'
 NOT_FILE = '{!r}: not a file'
 NOT_READABLE = '{!r}: not readable'
 FILE_EXT_NOT_MATCH = '{!r}: does not have extension `{}`'
+FILE_ALREADY_EXISTS = '{!r}: file already exists'
 
 IS_NONE = '{} is None'
 
