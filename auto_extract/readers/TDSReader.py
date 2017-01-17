@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""This module defines xml readers for tableau files
-"""
+"""This module defines tableau datasource xml reader"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -20,13 +19,7 @@ from auto_extract import _constants
 from auto_extract import _error_messages as err_msgs
 from auto_extract.content_handlers import ContentHandlerException
 from auto_extract.content_handlers import TDSContentHandler
-
-
-class ReaderException(Exception):
-    """raised when an exception is thrown by a Reader"""
-
-    def __init__(self, *args, **kwargs):
-        super(ReaderException, self).__init__(*args, **kwargs)
+from auto_extract.readers.exceptions import ReaderException
 
 
 class TDSReader(object):
