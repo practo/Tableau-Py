@@ -13,8 +13,8 @@ from tableausdk.Exceptions import TableauException
 from tableausdk.Extract import Extract
 from tableausdk.Extract import ExtractAPI
 
-from auto_extract import _status
 from auto_extract import _constants
+from auto_extract import _status
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.exceptions import AutoExtractException
 from auto_extract.readers import ReaderException
