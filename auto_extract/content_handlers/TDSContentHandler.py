@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""This module defines xml content handlers for parsing tableau
-files into python objects
+"""This module defines tableau datasource content handler for
+parsing tableau datasource files
 """
 
 from __future__ import absolute_import
@@ -11,13 +11,7 @@ import lxml.etree as etree
 import xmltodict
 
 from auto_extract import _error_messages as err_msgs
-
-
-class ContentHandlerException(Exception):
-    """raised when an exception is thrown by a ContentHandlers"""
-
-    def __init__(self, *args, **kwargs):
-        super(ContentHandlerException, self).__init__(*args, **kwargs)
+from auto_extract.content_handlers.exceptions import ContentHandlerException
 
 
 class TDSContentHandler(object):

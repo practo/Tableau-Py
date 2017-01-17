@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Unit Test Cases for TDSContentHandler"""
 
-"""
-Unit Test Cases for content_handlers module
-
-Classes:
-
-    TestTDSContentHandler
-
-"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
