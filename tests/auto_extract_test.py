@@ -87,8 +87,8 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['--help'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 0
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
     def test_without_argument(self):
@@ -101,8 +101,8 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main)
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
 
     @isolated_filesystem
     def test_with_single_file(self):
@@ -116,10 +116,10 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['sample.tds'])
-        assert result.exit_code == 0
-        assert os.path.exists('sample.tde')
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
+        self.assertEqual(result.exit_code, 0)
+        self.assertTrue(os.path.exists('sample.tde'))
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
 
     @isolated_filesystem
     def test_with_wrong_filename(self):
@@ -132,9 +132,9 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['sample1.tds'])
-        assert result.exit_code == -1
-        assert isinstance(result.exception, OSError)
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
+        self.assertEqual(result.exit_code, -1)
+        self.assertIsInstance(result.exception, OSError)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
 
     @isolated_filesystem
     def test_with_single_file_multiple_times(self):  # pylint: disable=locally-disabled,invalid-name
@@ -147,8 +147,8 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['sample.tds', 'sample.tds'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
 
     @isolated_filesystem
     def test_with_multiple_files(self):
@@ -165,12 +165,12 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         shutil.copy('sample.tds', 'sample1.tds')
         result = RUNNER.invoke(main, ['sample.tds', 'sample1.tds'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert os.path.exists('sample.tde')
-        assert os.path.exists('sample1.tde')
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 2
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 0
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertTrue(os.path.exists('sample.tde'))
+        self.assertTrue(os.path.exists('sample1.tde'))
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 2)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
     def test_with_multiple_calls_without_overwrite(self):  # pylint: disable=locally-disabled,invalid-name
@@ -187,12 +187,12 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         RUNNER.invoke(main, ['sample.tds'])
         result = RUNNER.invoke(main, ['sample.tds'])
-        assert result.exit_code == -1
-        assert isinstance(result.exception, AutoExtractException)
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 0
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 1
-        assert result.exc_info[1].args[0].values() == [
+        self.assertEqual(result.exit_code, -1)
+        self.assertIsInstance(result.exception, AutoExtractException)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 0)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 1)
+        self.assertEqual(result.exc_info[1].args[0].values(), [
             {
                 'status': {
                     'color': 'red',
@@ -201,7 +201,7 @@ class TestAutoExtractCommand(unittest.TestCase):
                 'local-path': 'sample.tds',
                 'msg': 'duplicate table name'
             }
-        ]
+        ])
 
     @isolated_filesystem
     def test_with_overwrite(self):
@@ -217,17 +217,17 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 0
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
         result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert os.path.exists('sample.tde')
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 0
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertTrue(os.path.exists('sample.tde'))
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
     def test_with_any_other_extension(self):
@@ -244,12 +244,12 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         RUNNER.invoke(main, ['sample.tds'])
         result = RUNNER.invoke(main, ['sample.tde'])
-        assert result.exit_code == -1
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert isinstance(result.exception, AutoExtractException)
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 0
-        assert result.exc_info[1].args[0].values() == [
+        self.assertEqual(result.exit_code, -1)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertIsInstance(result.exception, AutoExtractException)
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 0)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 1)
+        self.assertEqual(result.exc_info[1].args[0].values(), [
             {
                 'status': {
                     'color': 'red',
@@ -258,7 +258,7 @@ class TestAutoExtractCommand(unittest.TestCase):
                 'local-path': 'sample.tde',
                 'msg': '\'sample.tde\': does not have extension `.tds`'
             }
-        ]
+        ])
 
     @isolated_filesystem
     def test_with_suffix(self):
@@ -274,11 +274,11 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['--suffix', '_TDE', 'sample.tds'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 0
-        assert os.path.exists('sample_TDE.tde')
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertTrue(os.path.exists('sample_TDE.tde'))
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
     def test_with_prefix(self):
@@ -294,11 +294,11 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['--prefix', 'TDE_', 'sample.tds'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 0
-        assert os.path.exists('TDE_sample.tde')
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertTrue(os.path.exists('TDE_sample.tde'))
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
     def test_with_prefix_and_suffix(self):
@@ -314,11 +314,11 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['--prefix', 'TDE_', '--suffix', '_TDE', 'sample.tds'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 0
-        assert os.path.exists('TDE_sample_TDE.tde')
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertTrue(os.path.exists('TDE_sample_TDE.tde'))
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
     def test_with_output_dir_when_not_exist(self):  # pylint: disable=locally-disabled,invalid-name
@@ -331,10 +331,10 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
 
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
-        assert result.exit_code == -1
-        assert not os.path.exists(os.path.join('temp', 'sample.tde'))
-        assert isinstance(result.exception, OSError)
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 0
+        self.assertEqual(result.exit_code, -1)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 0)
+        self.assertFalse(os.path.exists(os.path.join('temp', 'sample.tde')))
+        self.assertIsInstance(result.exception, OSError)
 
     @isolated_filesystem
     def test_with_output_dir_when_exist(self):
@@ -351,8 +351,8 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         os.mkdir('temp')
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
-        assert result.exit_code == 0
-        assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
-        assert len(self.SUCCESS_PATTERN.findall(result.output)) == 1
-        assert len(self.FAILED_PATTERN.findall(result.output)) == 0
-        assert os.path.exists(os.path.join('temp', 'sample.tde'))
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertTrue(os.path.exists(os.path.join('temp', 'sample.tde')))
+        self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
+        self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
