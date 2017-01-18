@@ -8,17 +8,11 @@ from __future__ import print_function
 
 import click
 from pathlib2 import Path
-from tableausdk.Exceptions import GetLastErrorMessage
-from tableausdk.Exceptions import TableauException
-from tableausdk.Extract import Extract
-from tableausdk.Extract import ExtractAPI
 
-from auto_extract import _constants
 from auto_extract import _status
-from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.exceptions import AutoExtractException
-from auto_extract.readers import ReaderException
-from auto_extract.readers import TDSReader
+from auto_extract.writers import TDEWriter
+from auto_extract.writers import WriterException
 
 _RES_STATUS = 'status'
 _RES_LOCAL_PATH = 'local-path'
@@ -53,14 +47,16 @@ def main(files, overwrite, prefix, suffix, output_dir):
     OSError will be raised otherwise.
     """
 
-    ExtractAPI.initialize()
     tde_success_map = dict()
 
     cols = _compute_cols(files)
-    absolute_output_dir = None
 
-    if output_dir is not None:
-        absolute_output_dir = Path(output_dir).resolve()
+    tde_writer = TDEWriter(options={
+        'prefix': prefix,
+        'suffix': suffix,
+        'overwrite': overwrite,
+        'output_dir': output_dir
+    })
 
     with click.progressbar(files, label=_PROGRESS_TEXT) as file_names:
         for file_name in file_names:
@@ -69,16 +65,19 @@ def main(files, overwrite, prefix, suffix, output_dir):
             if absolute_path in tde_success_map:
                 continue
 
-            tde_path = _get_tde_path(prefix, file_name, suffix)
-
-            if absolute_output_dir is not None:
-                tde_path = absolute_output_dir / tde_path.name
-
-            if overwrite and tde_path.exists():
-                tde_path.unlink()
-
-            result = _generate_extract(file_name, str(tde_path))
-            tde_success_map[absolute_path] = result
+            try:
+                tde_writer.generate_from_tds(file_name)
+                tde_success_map[absolute_path] = {
+                    _RES_STATUS: _status.SUCCESS,
+                    _RES_LOCAL_PATH: file_name,
+                    _RES_MSG: ''
+                }
+            except WriterException as err:
+                tde_success_map[absolute_path] = {
+                    _RES_STATUS: _status.FAILED,
+                    _RES_LOCAL_PATH: file_name,
+                    _RES_MSG: str(err)
+                }
 
     failed = False
     for key in tde_success_map:
@@ -86,87 +85,8 @@ def main(files, overwrite, prefix, suffix, output_dir):
             failed = True
         _print_result(tde_success_map[key], cols=cols)
 
-    ExtractAPI.cleanup()
-
     if failed:
         raise AutoExtractException(tde_success_map)
-
-
-def _get_tde_path(prefix, tds_file_name, suffix):
-    """Returns tde file path from tds file path
-
-    Parameters
-    ----------
-    prefix: str
-        prefix to add to the filename
-    tds_file_name: str
-    suffix: str
-        suffix to add to the filename
-
-    Returns
-    -------
-    :py:obj:`~pathlib2.Path`
-        path of tde file
-    """
-
-    tds_path = Path(tds_file_name)
-    tde_file_name = prefix + tds_path.stem + suffix
-    tde_path = tds_path.with_name(tde_file_name)
-    tde_path = tde_path.with_suffix(_constants.TDE_EXTENSION)
-
-    return tde_path
-
-
-def _generate_extract(tds_file_name, tde_file_name):
-    """Generates a tde file from tds file
-
-    Parameters
-    ----------
-    tds_file_name : str
-        tableau datasource file name / path
-    tde_file_name : str
-        tableau extract file name / path
-
-    Returns
-    -------
-    dict
-        result in the format
-
-        ::
-
-            {
-                'status': True | False depending on success or failure,
-                'msg': error message if any,
-                'local-path': path of the tableau datasource file
-            }
-    """
-
-    new_extract = Extract(tde_file_name)
-    result = {
-        _RES_STATUS: _status.FAILED,
-        _RES_LOCAL_PATH: tds_file_name,
-        _RES_MSG: ''
-    }
-
-    try:
-        tds_content_handler = TDSContentHandler()
-        tds_reader = TDSReader(tds_content_handler)
-
-        tds_reader.read(tds_file_name)
-        table_definition = tds_reader.define_table()
-
-        new_extract.addTable('Extract', tableDefinition=table_definition)
-
-        new_extract.close()
-        table_definition.close()
-
-        result[_RES_STATUS] = _status.SUCCESS
-    except ReaderException as err:
-        result[_RES_MSG] = str(err)
-    except TableauException:
-        result[_RES_MSG] = GetLastErrorMessage()
-
-    return result
 
 
 def _print_result(tde_result, cols=80):
