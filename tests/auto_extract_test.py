@@ -14,6 +14,10 @@ import shutil
 import unittest
 
 from click.testing import CliRunner
+from tableausdk.Extract import Extract
+from tableausdk.Extract import TableDefinition
+from tableausdk.Types import Type
+from tableausdk.Types import Collation
 
 from auto_extract.cli import main
 from auto_extract.exceptions import AutoExtractException
@@ -104,6 +108,23 @@ class TestAutoExtractCommand(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
 
+    def _assert_table_definition(self, table_def, expected_col_count, expected_collation):
+        """
+        Asserts
+        -------
+        * Value is not None
+        * Value is instance of TableDefinition
+        * Value has expected column count
+
+        TODO
+        ----
+        * Value has expected default collation
+        """
+        self.assertIsNotNone(table_def)
+        self.assertIsInstance(table_def, TableDefinition)
+        self.assertEqual(table_def.getColumnCount(), expected_col_count)
+        # self.assertEqual(table_def.getDefaultCollation(), expected_collation)
+
     @isolated_filesystem
     def test_with_single_file(self):
         """Tests with single file
@@ -113,6 +134,13 @@ class TestAutoExtractCommand(unittest.TestCase):
         * Progress text is displayed
         * Extract file exists
         * Success is displayed
+        * Each column in extract is having the expected name
+        * Each column in extract is having the expected type
+
+        TODO
+        ----
+        * check column collation
+        * check with different collation
         """
 
         result = RUNNER.invoke(main, ['sample.tds'])
@@ -120,6 +148,37 @@ class TestAutoExtractCommand(unittest.TestCase):
         self.assertTrue(os.path.exists('sample.tde'))
         self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
         self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 1)
+
+        collation = Collation.EN_US_CI
+        extract = Extract('sample.tde')
+        self.assertTrue(extract.hasTable('Extract'))
+        table_definition = extract.openTable('Extract').getTableDefinition()
+        self._assert_table_definition(table_definition, 9, collation)
+
+        def col_name(name): return '[{}].[{}]'.format('TABLE_NAME', name)
+
+        get_column_name = table_definition.getColumnName
+        get_column_type = table_definition.getColumnType
+
+        self.assertEqual(get_column_name(0), col_name('LOCAL_COLUMN_NAME1'))
+        self.assertEqual(get_column_name(1), col_name('LOCAL_COLUMN_NAME2'))
+        self.assertEqual(get_column_name(2), col_name('LOCAL_COLUMN_NAME3'))
+        self.assertEqual(get_column_name(3), col_name('LOCAL_COLUMN_NAME4'))
+        self.assertEqual(get_column_name(4), col_name('LOCAL_COLUMN_NAME5'))
+        self.assertEqual(get_column_name(5), col_name('LOCAL_COLUMN_NAME6'))
+        self.assertEqual(get_column_name(6), col_name('LOCAL_COLUMN_NAME7'))
+        self.assertEqual(get_column_name(7), col_name('LOCAL_COLUMN_NAME8'))
+        self.assertEqual(get_column_name(8), col_name('LOCAL_COLUMN_NAME9'))
+
+        self.assertEqual(get_column_type(0), Type.DATE)
+        self.assertEqual(get_column_type(1), Type.CHAR_STRING)
+        self.assertEqual(get_column_type(2), Type.CHAR_STRING)
+        self.assertEqual(get_column_type(3), Type.CHAR_STRING)
+        self.assertEqual(get_column_type(4), Type.CHAR_STRING)
+        self.assertEqual(get_column_type(5), Type.CHAR_STRING)
+        self.assertEqual(get_column_type(6), Type.CHAR_STRING)
+        self.assertEqual(get_column_type(7), Type.CHAR_STRING)
+        self.assertEqual(get_column_type(8), Type.CHAR_STRING)
 
     @isolated_filesystem
     def test_with_wrong_filename(self):
@@ -183,6 +242,10 @@ class TestAutoExtractCommand(unittest.TestCase):
         * Error Message and Failed object
         * Failed is printed
         * Success is not printed
+
+        TODO
+        ----
+        * Overwrite with duplicate table name and without
         """
 
         RUNNER.invoke(main, ['sample.tds'])
@@ -192,16 +255,17 @@ class TestAutoExtractCommand(unittest.TestCase):
         self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
         self.assertEqual(len(self.SUCCESS_PATTERN.findall(result.output)), 0)
         self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 1)
-        self.assertEqual(result.exc_info[1].args[0].values(), [
-            {
-                'status': {
-                    'color': 'red',
-                    'text': 'Failed'
-                },
-                'local-path': 'sample.tds',
-                'msg': 'duplicate table name'
-            }
-        ])
+        result_values = result.exc_info[1].args[0].values()
+        self.assertEqual(len(result_values), 1)
+        self.assertIsNotNone(result_values[0].get('status'))
+        self.assertEqual(result_values[0].get('status'), {
+            'color': 'red',
+            'text': 'Failed'
+        })
+        self.assertIsNotNone(result_values[0].get('local-path'))
+        self.assertEqual(result_values[0].get('local-path'), 'sample.tds')
+        self.assertIsNotNone(result_values[0].get('msg'))
+        self.assertRegexpMatches(result_values[0].get('msg'), '\'.*/sample.tde\': file already exists')
 
     @isolated_filesystem
     def test_with_overwrite(self):
