@@ -70,6 +70,7 @@ setup(
         'lxml==3.6.0',
         'pathlib2',
         'click',
+        'semantic-version',
     ],
     dependency_links=[
         tableau_sdk,
