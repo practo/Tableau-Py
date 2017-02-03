@@ -20,7 +20,7 @@ _tableausdk_url_map = {
         'Linux': 'https://downloads.tableau.com/tssoftware/Tableau-SDK-Python-Linux-64Bit-10-1-1.tar.gz',
     },
     '32bit': {
-        'Windows': 'https://downloads.tableau.com/tssoftware/Tableau-SDK-C-Java-32Bit-10-1-1.zip',
+        'Windows': 'https://downloads.tableau.com/tssoftware/Tableau-SDK-Python-Win-32Bit-10-1-1.zip',
         'Linux': 'https://downloads.tableau.com/tssoftware/Tableau-SDK-Python-Linux-32Bit-10-1-1.tar.gz',
     }
 }
@@ -67,7 +67,7 @@ setup(
         ]
     },
     install_requires=[
-        'lxml',
+        'lxml==3.6.0',
         'pathlib2',
         'click',
     ],
