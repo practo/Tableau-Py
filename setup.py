@@ -74,7 +74,7 @@ setup(
     dependency_links=[
         tableau_sdk,
     ],
-    license='Apache License (2.0)',
+    license='MIT License',
     name='auto_extract',
     packages=[
         'auto_extract',
