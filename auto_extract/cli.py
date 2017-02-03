@@ -35,20 +35,25 @@ def main(files, overwrite, prefix, suffix, output_dir):
     `FILES` include list of filenames / filepaths and it accepts characters
     like '*', anything that will result in a valid file path.
 
-    OSError will be raised otherwise.
-
     """
-    ExtractAPI.initialize()
-    tde_success_map = dict()
-
-    cols = _compute_cols(files)
     absolute_output_dir = None
 
     if output_dir is not None:
+        if not Path(output_dir).exists():
+            raise AutoExtractException('Output Directory: {!r} does not exists'.format(output_dir))
+
         absolute_output_dir = Path(output_dir).resolve()
+
+    tde_success_map = dict()
+    cols = _compute_cols(files)
+
+    ExtractAPI.initialize()
 
     with click.progressbar(files, label='Processing datasource files') as file_names:
         for file_name in file_names:
+            if not Path(file_name).exists():
+                raise AutoExtractException('File Path: {!r} does not exists'.format(file_name))
+
             absolute_path = str(Path(file_name).resolve())
 
             if absolute_path in tde_success_map:

@@ -118,12 +118,13 @@ class TestAutoExtractCommand(unittest.TestCase):
         """
         Asserts:
             * Progress text is displayed
-            * OSError is thrown
+            * AutoExtractException is thrown
 
         """
         result = RUNNER.invoke(main, ['sample1.tds'])
         assert result.exit_code == -1
-        assert isinstance(result.exception, OSError)
+        assert isinstance(result.exception, AutoExtractException)
+        assert str(result.exception) == 'File Path: \'sample1.tds\' does not exists'
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 1
 
     @isolated_filesystem
@@ -298,14 +299,15 @@ class TestAutoExtractCommand(unittest.TestCase):
     def test_with_output_dir_when_not_exist(self):  # pylint: disable=locally-disabled,invalid-name
         """
         Asserts:
-            * completes unsuccessfully with OSError
+            * completes unsuccessfully with AutoExtractException
             * File is not created
 
         """
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
         assert result.exit_code == -1
         assert not os.path.exists('temp' + os.sep + 'sample.tde')
-        assert isinstance(result.exception, OSError)
+        assert isinstance(result.exception, AutoExtractException)
+        assert str(result.exception) == 'Output Directory: \'temp\' does not exists'
         assert len(self.PROGRESS_TEXT_PATTERN.findall(result.output)) == 0
 
     @isolated_filesystem
