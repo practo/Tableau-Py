@@ -67,7 +67,7 @@ setup(
         ]
     },
     install_requires=[
-        'lxml',
+        'lxml==3.6.0',
         'pathlib2',
         'click',
     ],
