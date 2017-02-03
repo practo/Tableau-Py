@@ -103,6 +103,7 @@ class TestTDSContentHandler(unittest.TestCase):
         tds_xml.attrib.update({
             'inline': 'true',
             'formatted-name': 'Datasource Testing',
+            'version': '10.0'
         })
         self._fail_on_missing_inside_connection(tds_xml)
 
@@ -121,6 +122,7 @@ class TestTDSContentHandler(unittest.TestCase):
         tds_xml.attrib.update({
             'inline': 'true',
             'formatted-name': 'Datasource Testing',
+            'version': '10.0'
         })
 
         connection = etree.Element('connection')
@@ -164,6 +166,7 @@ class TestTDSContentHandler(unittest.TestCase):
         tds_xml.attrib.update({
             'inline': 'true',
             'formatted-name': 'Datasource Testing',
+            'version': '10.0'
         })
 
         connection = etree.Element('connection')

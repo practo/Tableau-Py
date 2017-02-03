@@ -1,4 +1,4 @@
-<datasource formatted-name="Datasource Example" inline="true">
+<datasource formatted-name="Datasource Example" inline="true" version="10.0">
     <connection class="sqlproxy">
         <named-connections>
             <named-connection caption="0.0.0.0" name="sqlserver.fh8y4646y8hij937">

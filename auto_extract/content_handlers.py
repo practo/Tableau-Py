@@ -8,6 +8,7 @@ python objects
 from __future__ import absolute_import, unicode_literals
 
 from auto_extract.xml_as_dictionary import XmlDictConfig
+from auto_extract import paths
 
 
 class TDSContentHandler(object):
@@ -93,7 +94,8 @@ class TDSContentHandler(object):
         >>> tds_content_handler.metadata == {
         ...     u'datasource': {
         ...             'formatted-name': 'Datasource Example',
-        ...             'inline': 'true'
+        ...             'inline': 'true',
+        ...             'version': '10.0'
         ...     },
         ...     u'connection': {
         ...             'authentication': 'sqlserver',
@@ -125,7 +127,8 @@ class TDSContentHandler(object):
 
         assert len(datasource) != 0, 'datasource information is empty'
 
-        connection_path = 'connection/named-connections/named-connection/connection'
+        connection_path = paths.finder.get_xpath(
+            tds_xml, paths.constants.TDS_CONNECTION, strict=False)
         connections = list()
 
         for connection in tds_xml.iterfind(connection_path):
@@ -140,7 +143,8 @@ class TDSContentHandler(object):
 
         assert len(connection) != 0, 'connection information is empty'
 
-        metadata_record_path = 'connection/metadata-records/metadata-record'
+        metadata_record_path = paths.finder.get_xpath(
+            tds_xml, paths.constants.TDS_METADATA_RECORD, strict=False)
         columns = list()
 
         for metadata_record in tds_xml.iterfind(metadata_record_path):

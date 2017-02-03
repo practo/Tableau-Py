@@ -1,6 +1,7 @@
 datasource:
     formatted-name: 'Datasource Example'
     inline: 'true'
+    version: '10.0'
 connection:
     authentication: sqlserver
     class: sqlserver
