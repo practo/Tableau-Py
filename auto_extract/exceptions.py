@@ -9,6 +9,4 @@ from __future__ import print_function
 
 class AutoExtractException(Exception):
     """AutoExtract Command exception"""
-
-    def __init__(self, *args, **kwargs):
-        super(AutoExtractException, self).__init__(*args, **kwargs)
+    pass
