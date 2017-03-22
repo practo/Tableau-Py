@@ -42,3 +42,15 @@ class FileIOException(TableauPyException, IOError):
         # thus using file here
         self.file = filename
         self.args += (filename,)
+
+
+class UnexpectedNoneValue(TableauPyException, AssertionError):
+    """Exception is thrown when a value is unexpectedly None"""
+
+    _message_template = '{} is None'
+
+    def __init__(self, identifier):
+        AssertionError.__init__(self)
+        TableauPyException.__init__(self)
+        self.identifier = identifier
+        self.args += (identifier,)
