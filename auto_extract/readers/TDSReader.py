@@ -11,7 +11,6 @@ import lxml.etree as etree
 from pathlib2 import Path
 from six import reraise
 
-from auto_extract import _constants
 from auto_extract.content_handlers import ContentHandlerException
 from auto_extract.readers.exceptions import ReaderException
 from auto_extract.readers.Reader import Reader
@@ -30,7 +29,7 @@ class TDSReader(Reader):
     _parser = etree.XMLParser(remove_blank_text=True, remove_comments=True)
 
     def __init__(self, xml_content_handler):
-        super(TDSReader, self).__init__(_constants.TDS_EXTENSION)
+        super(TDSReader, self).__init__('.tds')
         self._xml_content_handler = xml_content_handler
 
     def get_datasource_column_defs(self):

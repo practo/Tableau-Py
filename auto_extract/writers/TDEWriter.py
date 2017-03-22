@@ -16,8 +16,6 @@ from tableausdk.Extract import TableDefinition
 from tableausdk.Types import Collation
 from tableausdk.Types import Type
 
-from auto_extract import _constants
-
 from auto_extract import _error_messages as err_msgs
 from auto_extract.content_handlers import TDSContentHandler
 from auto_extract.readers import ReaderException
@@ -87,7 +85,7 @@ class TDEWriter(Writer):
     }
 
     def __init__(self, options=None):
-        super(TDEWriter, self).__init__(_constants.TDE_EXTENSION, options)
+        super(TDEWriter, self).__init__('.tde', options)
         ExtractAPI.initialize()
 
     def __del__(self):
