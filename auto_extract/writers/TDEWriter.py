@@ -5,9 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
-
-from six import reraise
+from future.utils import raise_with_traceback
 from tableausdk.Exceptions import GetLastErrorMessage
 from tableausdk.Exceptions import TableauException
 from tableausdk.Extract import Extract
@@ -18,8 +16,8 @@ from tableausdk.Types import Type
 
 from auto_extract import _constants
 
-from auto_extract import _error_messages as err_msgs
 from auto_extract.content_handlers import TDSContentHandler
+from auto_extract.exceptions import UnexpectedNoneValue
 from auto_extract.readers import ReaderException
 from auto_extract.readers import TDSReader
 from auto_extract.writers.exceptions import WriterException
@@ -111,10 +109,19 @@ class TDEWriter(Writer):
         TableDefinition
             tableau definition object from parsed tableau datasource file
 
+        Note
+        ----
+        If the column type information is not available, it will use default
+        column type as Type.UNICODE_STRING
+
         Raises
         ------
         TableauException
             when Tableau SDK fails to add column in table definition
+        WriterException
+            * when parent_name is None in column_definition
+            * when local_name is None in column_definition
+            * when a KeyError is occurred while fetching data
         """
 
         table_definition = TableDefinition()
@@ -123,31 +130,33 @@ class TDEWriter(Writer):
         table_definition.setDefaultCollation(collation)
 
         for i, col_def in enumerate(column_definitions, start=1):
-            parent_name = col_def.get(TDSContentHandler.K_COL_DEF_PARENT_NAME)
-            local_name = col_def.get(TDSContentHandler.K_COL_DEF_LOCAL_NAME)
-            local_type = col_def.get(TDSContentHandler.K_COL_DEF_LOCAL_TYPE)
+            try:
+                [parent_name, local_name, local_type] = [
+                    col_def.get(TDSContentHandler.K_COL_DEF_PARENT_NAME),
+                    col_def.get(TDSContentHandler.K_COL_DEF_LOCAL_NAME),
+                    col_def.get(TDSContentHandler.K_COL_DEF_LOCAL_TYPE),
+                ]
 
-            assert_msg = err_msgs.IS_NONE + 'at: {}: {!s}\n'
+                if parent_name is None:
+                    raise UnexpectedNoneValue(
+                        TDSContentHandler.K_COL_DEF_PARENT_NAME
+                    )
 
-            assert parent_name is not None, assert_msg.format(
-                TDSContentHandler.K_COL_DEF_PARENT_NAME, i, col_def
-            )
+                if local_name is None:
+                    raise UnexpectedNoneValue(
+                        TDSContentHandler.K_COL_DEF_LOCAL_NAME
+                    )
 
-            assert local_name is not None, assert_msg.format(
-                TDSContentHandler.K_COL_DEF_LOCAL_NAME, i, col_def
-            )
+                column_name = '{}.{}'.format(parent_name, local_name)
+                column_type = self._type_map.get(
+                    local_type,
+                    self._type_map['unicode_string']
+                )
 
-            assert local_type is not None, assert_msg.format(
-                TDSContentHandler.K_COL_DEF_LOCAL_TYPE, i, col_def
-            )
-
-            column_name = '{}.{}'.format(parent_name, local_name)
-            column_type = self._type_map.get(
-                local_type,
-                self._type_map['unicode_string']
-            )
-
-            table_definition.addColumn(column_name, column_type)
+                table_definition.addColumn(column_name, column_type)
+            except (UnexpectedNoneValue, KeyError) as err:
+                err.args += (i, col_def)
+                raise_with_traceback(WriterException(err))
 
         return table_definition
 
@@ -238,6 +247,6 @@ class TDEWriter(Writer):
             new_extract.close()
             table_definition.close()
         except ReaderException as err:
-            reraise(WriterException, str(err), sys.exc_info()[2])
+            raise_with_traceback(WriterException(err))
         except TableauException:
-            raise WriterException(GetLastErrorMessage())
+            raise_with_traceback(WriterException(GetLastErrorMessage()))

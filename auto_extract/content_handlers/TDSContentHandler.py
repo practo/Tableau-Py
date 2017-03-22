@@ -10,8 +10,7 @@ from __future__ import print_function
 import lxml.etree as etree
 import xmltodict
 
-from auto_extract import _error_messages as err_msgs
-from auto_extract.content_handlers.exceptions import ContentHandlerException
+from auto_extract.content_handlers import exceptions
 
 
 class TDSContentHandler(object):
@@ -132,17 +131,18 @@ class TDSContentHandler(object):
 
         Raises
         ------
-        ContentHandlerException
-            when datasource infromation is empty,
-            when connection information is empty,
+        UnexpectedCount
             when more than 1 connection information is available
+        UnexpectedEmptyInformation
+            when datasource information is empty,
+            when connection information is empty,
         """
 
         datasource = dict(tds_xml.attrib)
 
         if len(datasource) == 0:
-            raise ContentHandlerException(
-                err_msgs.EMPTY_INFORMATION.format(self.K_METADATA_DATASOURCE)
+            raise exceptions.UnexpectedEmptyInformation(
+                self.K_METADATA_DATASOURCE
             )
 
         connection_path = '/'.join([
@@ -157,10 +157,10 @@ class TDSContentHandler(object):
             connections.append(connection.attrib)
 
         if len(connections) != 1:
-            raise ContentHandlerException(
-                err_msgs.UNEXPECTED_COUNT.format(
-                    self.K_METADATA_CONNECTION, 1, len(connections)
-                )
+            raise exceptions.UnexpectedCount(
+                identifier=self.K_METADATA_CONNECTION,
+                expected=1,
+                value=len(connections)
             )
 
         # dict because the lxml.etree.Element.attrib represents a dictionary
@@ -168,8 +168,8 @@ class TDSContentHandler(object):
         connection = dict(connections[0])
 
         if len(connection) == 0:
-            raise ContentHandlerException(
-                err_msgs.EMPTY_INFORMATION.format(self.K_METADATA_CONNECTION)
+            raise exceptions.UnexpectedEmptyInformation(
+                self.K_METADATA_CONNECTION
             )
 
         metadata_record_path = '/'.join([

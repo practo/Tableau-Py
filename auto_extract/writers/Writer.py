@@ -5,13 +5,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
-
 from pathlib2 import Path
-from six import reraise
+from future.utils import raise_with_traceback
 
-from auto_extract import _error_messages as err_msgs
-from auto_extract.writers.exceptions import WriterException
+from auto_extract.writers import exceptions
 
 
 class Writer(object):
@@ -142,7 +139,7 @@ class Writer(object):
 
             return str(output_dir / output_path.name)
         except OSError as err:
-            reraise(WriterException, str(err), sys.exc_info()[2])
+            raise_with_traceback(exceptions.WriterException(err))
 
     def check_file_writable(self, output_path):
         """Checks if the file is writable
@@ -164,8 +161,7 @@ class Writer(object):
         output_path = Path(output_path)
 
         if not self.overwrite and output_path.exists():
-            err_msg = err_msgs.FILE_ALREADY_EXISTS.format(str(output_path))
-            raise WriterException(err_msg)
+            raise exceptions.FileAlreadyExists(str(output_path))
 
         if self.overwrite and output_path.exists():
             Path(output_path).unlink()
