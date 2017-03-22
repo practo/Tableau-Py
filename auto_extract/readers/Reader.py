@@ -20,7 +20,13 @@ class Reader(object):
 
     def __init__(self, extension):
         super(Reader, self).__init__()
-        self.extension = extension
+        self.__extension = extension
+
+    @property
+    def extension(self):
+        """extension getter"""
+
+        return self.__extension
 
     def check_file_readable(self, file_name):
         """Checks if `file_name` is readable
@@ -50,8 +56,8 @@ class Reader(object):
             if not os.access(absolute_path, os.R_OK):
                 raise IOError(err_msgs.NOT_READABLE.format(file_name))
 
-            if file_path.suffix != self.extension:
+            if file_path.suffix != self.__extension:
                 raise IOError(err_msgs.FILE_EXT_NOT_MATCH.format(
-                    file_name, self.extension))
+                    file_name, self.__extension))
         except IOError as err:
             reraise(ReaderException, str(err), sys.exc_info()[2])

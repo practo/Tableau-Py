@@ -42,7 +42,7 @@ class Writer(object):
     def __init__(self, extension, options=None):
         super(Writer, self).__init__()
 
-        self.extension = extension
+        self.__extension = extension
 
         _options = {
             'prefix': '',
@@ -59,6 +59,12 @@ class Writer(object):
 
         if self._output_dir is not None:
             Path(self.output_dir).resolve()
+
+    @property
+    def extension(self):
+        """extension getter"""
+
+        return self.__extension
 
     @property
     def prefix(self):
@@ -132,7 +138,7 @@ class Writer(object):
             file_path = Path(file_path)
             output_file_name = self.prefix + file_path.stem + self.suffix
             output_path = file_path.with_name(output_file_name)
-            output_path = output_path.with_suffix(self.extension)
+            output_path = output_path.with_suffix(self.__extension)
 
             if self.output_dir is not None:
                 output_dir = Path(self.output_dir).resolve()
