@@ -22,7 +22,7 @@ _PROGRESS_TEXT = 'Processing datasource files'
 
 
 @click.command(name='auto_extract')  # noqa: C901
-@click.option('-o', '--output-dir', type=click.Path(),
+@click.option('-o', '--output-dir', type=click.Path(exists=True),
               help='Output directory for generated files')
 @click.option('-s', '--suffix', default='',
               help='Adds suffix to generated file names')
@@ -30,7 +30,7 @@ _PROGRESS_TEXT = 'Processing datasource files'
               help='Adds prefix to generated file names')
 @click.option('--overwrite', is_flag=True,
               help='To overwrite already existing .tde files')
-@click.argument('files', nargs=-1, type=click.Path())
+@click.argument('files', nargs=-1, type=click.Path(exists=True))
 def main(files, overwrite, prefix, suffix, output_dir):
     """auto_extract command
 
@@ -44,7 +44,7 @@ def main(files, overwrite, prefix, suffix, output_dir):
     `FILES` include list of filenames / filepaths and it accepts characters
     like '*', anything that will result in a valid file path.
 
-    OSError will be raised otherwise.
+    Error will be thrown if any file / directory does not exists.
     """
 
     tde_success_map = dict()
