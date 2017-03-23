@@ -186,14 +186,17 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Progress text is displayed
-        * OSError is thrown
+        * Progress text is not displayed
+        * SystemExit error is thrown
+        * Exit code should be 2
+        * File is not created
         """
 
         result = RUNNER.invoke(main, ['sample1.tds'])
-        self.assertEqual(result.exit_code, -1)
-        self.assertIsInstance(result.exception, OSError)
-        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertEqual(result.exit_code, 2)
+        self.assertIsInstance(result.exception, SystemExit)
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 0)
+        self.assertFalse(os.path.exists('sample1.tde'))
 
     @isolated_filesystem
     def test_with_single_file_multiple_times(self):  # pylint: disable=locally-disabled,invalid-name
@@ -390,15 +393,16 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * completes unsuccessfully with OSError
+        * completes unsuccessfully with SystemExit
         * File is not created
+        * Progress bar is not displayed
         """
 
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
-        self.assertEqual(result.exit_code, -1)
+        self.assertEqual(result.exit_code, 2)
         self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 0)
         self.assertFalse(os.path.exists(os.path.join('temp', 'sample.tde')))
-        self.assertIsInstance(result.exception, OSError)
+        self.assertIsInstance(result.exception, SystemExit)
 
     @isolated_filesystem
     def test_with_output_dir_when_exist(self):

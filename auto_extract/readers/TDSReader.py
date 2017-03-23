@@ -5,11 +5,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
-
 import lxml.etree as etree
 from pathlib2 import Path
-from six import reraise
+from future.utils import raise_with_traceback
 
 from auto_extract.content_handlers import ContentHandlerException
 from auto_extract.readers.exceptions import ReaderException
@@ -103,4 +101,4 @@ class TDSReader(Reader):
 
             self._xml_content_handler.parse(root)
         except (etree.XMLSchemaParseError, ContentHandlerException) as err:
-            reraise(ReaderException, str(err), sys.exc_info()[2])
+            raise_with_traceback(ReaderException(err))
