@@ -14,12 +14,12 @@ from tableausdk.Extract import TableDefinition
 from tableausdk.Types import Collation
 from tableausdk.Types import Type
 
-from auto_extract.content_handlers import TDSContentHandler
+from auto_extract.contenthandlers import TDSContentHandler
 from auto_extract.exceptions import UnexpectedNoneValue
 from auto_extract.readers import ReaderException
 from auto_extract.readers import TDSReader
 from auto_extract.writers.exceptions import WriterException
-from auto_extract.writers.Writer import Writer
+from auto_extract.writers.base import Writer
 
 
 class TDEWriter(Writer):

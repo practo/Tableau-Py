@@ -9,9 +9,9 @@ import lxml.etree as etree
 from pathlib2 import Path
 from future.utils import raise_with_traceback
 
-from auto_extract.content_handlers import ContentHandlerException
+from auto_extract.contenthandlers import ContentHandlerException
 from auto_extract.readers.exceptions import ReaderException
-from auto_extract.readers.Reader import Reader
+from auto_extract.readers.base import Reader
 
 
 class TDSReader(Reader):
@@ -40,7 +40,7 @@ class TDSReader(Reader):
 
         Examples
         --------
-        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> from auto_extract.contenthandlers import TDSContentHandler
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
@@ -60,7 +60,7 @@ class TDSReader(Reader):
 
         Examples
         --------
-        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> from auto_extract.contenthandlers import TDSContentHandler
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
@@ -86,7 +86,7 @@ class TDSReader(Reader):
 
         Examples
         --------
-        >>> from auto_extract.content_handlers import TDSContentHandler
+        >>> from auto_extract.contenthandlers import TDSContentHandler
         >>> tds_content_handler = TDSContentHandler()
         >>> tds_reader = TDSReader(tds_content_handler)
         >>> tds_reader.read('sample/sample.tds')
