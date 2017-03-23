@@ -9,10 +9,10 @@ from __future__ import print_function
 import click
 from pathlib2 import Path
 
-from auto_extract import _status
-from auto_extract.exceptions import AutoExtractException
-from auto_extract.writers import TDEWriter
-from auto_extract.writers import WriterException
+from tableaupy import _status
+from tableaupy.exceptions import AutoExtractException
+from tableaupy.writers import TDEWriter
+from tableaupy.writers import WriterException
 
 _RES_STATUS = 'status'
 _RES_LOCAL_PATH = 'local-path'

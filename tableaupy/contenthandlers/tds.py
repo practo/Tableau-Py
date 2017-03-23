@@ -10,7 +10,7 @@ from __future__ import print_function
 import lxml.etree as etree
 import xmltodict
 
-from auto_extract.contenthandlers import exceptions
+from tableaupy.contenthandlers import exceptions
 
 
 class TDSContentHandler(object):

@@ -60,7 +60,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'AutoExtract'
+project = u'TableauPy'
 copyright = u'2016, Anurag Agarwal'
 author = u'Anurag Agarwal'
 
@@ -239,7 +239,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'AutoExtract.tex', u'AutoExtract Documentation',
+    (master_doc, 'TableauPy.tex', u'TableauPy Documentation',
      u'Anurag Agarwal', 'manual'),
 ]
 
@@ -269,7 +269,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'autoextract', u'AutoExtract Documentation',
+    (master_doc, 'autoextract', u'TableauPy Documentation',
      [author], 1)
 ]
 
@@ -283,8 +283,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'AutoExtract', u'AutoExtract Documentation',
-     author, 'AutoExtract', 'One line description of project.',
+    (master_doc, 'TableauPy', u'TableauPy Documentation',
+     author, 'TableauPy', 'One line description of project.',
      'Miscellaneous'),
 ]
 

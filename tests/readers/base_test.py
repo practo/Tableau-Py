@@ -8,8 +8,8 @@ from __future__ import print_function
 import os
 import unittest
 
-from auto_extract.readers import exceptions
-from auto_extract.readers import Reader
+from tableaupy.readers import exceptions
+from tableaupy.readers import Reader
 
 import config
 

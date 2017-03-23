@@ -8,7 +8,7 @@ from __future__ import print_function
 from pathlib2 import Path
 from future.utils import raise_with_traceback
 
-from auto_extract.writers import exceptions
+from tableaupy.writers import exceptions
 
 
 class Writer(object):

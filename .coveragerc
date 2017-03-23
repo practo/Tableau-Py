@@ -14,4 +14,4 @@ show_missing = true
 branch = true
 
 # The source directory to measure.
-source = auto_extract
+source = tableaupy

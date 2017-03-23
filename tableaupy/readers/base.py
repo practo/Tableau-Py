@@ -9,7 +9,7 @@ import os
 
 from pathlib2 import Path
 
-from auto_extract.readers import exceptions
+from tableaupy.readers import exceptions
 
 
 class Reader(object):

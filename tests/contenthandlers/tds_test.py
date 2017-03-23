@@ -11,8 +11,8 @@ import unittest
 import lxml.etree as etree
 import yaml
 
-from auto_extract.contenthandlers import ContentHandlerException
-from auto_extract.contenthandlers import TDSContentHandler
+from tableaupy.contenthandlers import ContentHandlerException
+from tableaupy.contenthandlers import TDSContentHandler
 
 class TestTDSContentHandler(unittest.TestCase):
     """
