@@ -7,8 +7,6 @@ matrix:
   - python: '2.7'
     env: TOXENV=pre-commit
   - python: '2.7'
-    env: TOXENV=docs
-  - python: '2.7'
     env: TOXENV=lint
   fast_finish: true
 install:
