@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Unit Test Cases for auto_extract command
+Unit Test Cases for tableaupy command
 
 """
 from __future__ import absolute_import
@@ -19,8 +19,8 @@ from tableausdk.Extract import TableDefinition
 from tableausdk.Types import Type
 from tableausdk.Types import Collation
 
-from auto_extract.cli import main
-from auto_extract.exceptions import AutoExtractException
+from tableaupy.cli import main
+from tableaupy.exceptions import AutoExtractException
 import config
 
 RUNNER = CliRunner()
@@ -29,7 +29,7 @@ RUNNER = CliRunner()
 def isolated_filesystem(func):
     """Isolated Filesystem decorator
 
-    Gives isolated filesystem for auto_extract test to run
+    Gives isolated filesystem for tableaupy test to run
     thus not polluting the current filesystem
 
     It copies the current sample/sample.tds to the isolated filesystem
@@ -64,7 +64,7 @@ def isolated_filesystem(func):
 
 
 class TestAutoExtractCommand(unittest.TestCase):
-    """Unit Test Cases for auto_extract command
+    """Unit Test Cases for tableaupy command
 
     DATA
     ----

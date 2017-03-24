@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-ancestors
 
-"""This module defines exceptions for auto_extract package
+"""This module defines exceptions for tableaupy package
 """
 
 from __future__ import absolute_import

@@ -10,9 +10,9 @@ import unittest
 
 import yaml
 
-from auto_extract.content_handlers import TDSContentHandler
-from auto_extract.readers import exceptions
-from auto_extract.readers import TDSReader
+from tableaupy.contenthandlers import TDSContentHandler
+from tableaupy.readers import exceptions
+from tableaupy.readers import TDSReader
 import config
 
 

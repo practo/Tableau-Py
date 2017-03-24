@@ -11,8 +11,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from auto_extract.content_handlers.exceptions import ContentHandlerException
-from auto_extract.content_handlers.TDSContentHandler import TDSContentHandler
+from tableaupy.contenthandlers.exceptions import ContentHandlerException
+from tableaupy.contenthandlers.tds import TDSContentHandler
 
 __all__ = [
     'ContentHandlerException',
