@@ -100,13 +100,16 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Command works without any arguments
-        * Progress text is displayed
+        * Command throws SystemExit exception when no argument is given
+        * Progress text is not displayed
+        * Error message is displayed indicating files argument is missing
         """
 
         result = RUNNER.invoke(main)
-        self.assertEqual(result.exit_code, 0)
-        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 1)
+        self.assertIsInstance(result.exception, SystemExit)
+        self.assertEqual(result.exit_code, 2)
+        self.assertRegexpMatches(result.output, 'Missing argument "files"')
+        self.assertEqual(len(self.PROGRESS_TEXT_PATTERN.findall(result.output)), 0)
 
     def _assert_table_definition(self, table_def, expected_col_count, expected_collation):
         """
