@@ -18,8 +18,8 @@ from tableaupy.contenthandlers import TDSContentHandler
 from tableaupy.exceptions import UnexpectedNoneValue
 from tableaupy.readers import ReaderException
 from tableaupy.readers import TDSReader
-from tableaupy.writers.exceptions import WriterException
 from tableaupy.writers.base import Writer
+from tableaupy.writers.exceptions import WriterException
 
 
 class TDEWriter(Writer):

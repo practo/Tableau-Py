@@ -5,8 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from pathlib2 import Path
 from future.utils import raise_with_traceback
+from pathlib2 import Path
 
 from tableaupy.writers import exceptions
 

@@ -5,13 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from future.utils import raise_with_traceback
 import lxml.etree as etree
 from pathlib2 import Path
-from future.utils import raise_with_traceback
 
 from tableaupy.contenthandlers import ContentHandlerException
-from tableaupy.readers.exceptions import ReaderException
 from tableaupy.readers.base import Reader
+from tableaupy.readers.exceptions import ReaderException
 
 
 class TDSReader(Reader):
