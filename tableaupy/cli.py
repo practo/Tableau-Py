@@ -30,7 +30,7 @@ _PROGRESS_TEXT = 'Processing datasource files'
               help='Adds prefix to generated file names')
 @click.option('--overwrite', is_flag=True,
               help='To overwrite already existing .tde files')
-@click.argument('files', nargs=-1, type=click.Path(exists=True))
+@click.argument('files', nargs=-1, type=click.Path(exists=True), required=True)
 def main(files, overwrite, prefix, suffix, output_dir):
     """auto_extract command
 
