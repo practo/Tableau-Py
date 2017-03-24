@@ -55,7 +55,7 @@ class Writer(object):
         self._output_dir = _options.get('output_dir')
 
         if self._output_dir is not None:
-            Path(self.output_dir).resolve()
+            Path(self._output_dir).resolve()
 
     @property
     def extension(self):
@@ -123,7 +123,8 @@ class Writer(object):
         -------
         str
             absolute path to output file with prefix, suffix
-            extension and output directory
+            extension.extension
+             and output directory
 
         Raises
         ------
@@ -133,12 +134,12 @@ class Writer(object):
 
         try:
             file_path = Path(file_path)
-            output_file_name = self.prefix + file_path.stem + self.suffix
+            output_file_name = self._prefix + file_path.stem + self._suffix
             output_path = file_path.with_name(output_file_name)
             output_path = output_path.with_suffix(self.__extension)
 
-            if self.output_dir is not None:
-                output_dir = Path(self.output_dir).resolve()
+            if self._output_dir is not None:
+                output_dir = Path(self._output_dir).resolve()
             else:
                 # because the file_path may have been passed with folder name
                 output_dir = output_path.parent.resolve()
@@ -166,8 +167,8 @@ class Writer(object):
         """
         output_path = Path(output_path)
 
-        if not self.overwrite and output_path.exists():
+        if not self._overwrite and output_path.exists():
             raise exceptions.FileAlreadyExists(str(output_path))
 
-        if self.overwrite and output_path.exists():
+        if self._overwrite and output_path.exists():
             Path(output_path).unlink()
