@@ -11,38 +11,42 @@ import unittest
 import lxml.etree as etree
 import yaml
 
+import config
 from tableaupy.contenthandlers import ContentHandlerException
 from tableaupy.contenthandlers import TDSContentHandler
 
-class TestTDSContentHandler(unittest.TestCase):
-    """
-    Unit Test Cases for testing TDSContentHandler
 
-    """
+class TestTDSContentHandler(unittest.TestCase):
+    """Unit Test Cases for testing TDSContentHandler"""
+
+    maxDiff = None
 
     def setUp(self):
         self.content_handler = TDSContentHandler()
-        self.maxDiff = None  # pylint: disable=locally-disabled,invalid-name
 
     def tearDown(self):
         self.content_handler = None
 
     def _check_error(self, tds_xml, regex_match):
-        """
-        Checks if parsing `tds_xml` gives assertion error matching `regex_match`
-        Further assertions are used to check if there is any stale information being,
-        stored in the method properties
+        """checks common assertion errors based on params passed
 
-        Asserts:
-            * Raises given error
-            * If after raise metadata property is not None
-            * If after raise metadata property is an instance of dict
-            * If after raise metadata property is empty dict
-            * If after raise column_definitions property is not None
-            * If after raise column_definitions property is an instance of list
-            * If after raise column_definitions property is empty list
+        Checks if parsing `tds_xml` gives assertion error matching
+        `regex_match`.
 
+        Further assertions are used to check if there is any stale
+        or inconsistent information stored in method properties after parse.
+
+        Asserts
+        -------
+        * raises ContentHandlerException with regex_match
+        * after raise metadata property is not None
+        * after raise metadata property is an instance of dict
+        * after raise metadata property is empty dict
+        * after raise column_definitions property is not None
+        * after raise column_definitions property is an instance of list
+        * after raise column_definitions property is empty list
         """
+
         with self.assertRaisesRegexp(ContentHandlerException, regex_match):
             self.content_handler.parse(tds_xml)
 
@@ -55,42 +59,51 @@ class TestTDSContentHandler(unittest.TestCase):
         self.assertEqual(self.content_handler.column_definitions, [])
 
     def _fail_on_missing_datasource_information(self, tds_xml):  # pylint: disable=locally-disabled,invalid-name
-        """
+        """checks if fails on missing datasource information
+
         Checks if parsing `tds_xml` without datasource information
         gives assertion error
-
         """
+
         self._check_error(tds_xml, '\'datasource\': information is empty')
 
     def _fail_on_missing_inside_connection(self, tds_xml):  # pylint: disable=locally-disabled,invalid-name
-        """
+        """checks if fails on missing connection information
+
         Checks if parsing `tds_xml` without connection information
         gives assertion error
-
         """
-        self._check_error(tds_xml, 'expected count of connection to be 1, got 0')
+
+        message = 'expected count of connection to be 1, got 0'
+        self._check_error(tds_xml, message)
 
     def _fail_on_multiple_connections(self, tds_xml, element):  # pylint: disable=locally-disabled,invalid-name
-        """
-        Checks if parsing `tds_xml` with multiple connection information
-        gives assertion error. It duplicates `element` as a sibling to it's parent
-        to repeat the inside connection.
+        """checks if fail on multiple connections
 
+        Checks if parsing `tds_xml` with multiple connection information
+        gives assertion error.
+
+        It duplicates `element` as a sibling to it's parent to repeat the
+        inside connection.
         """
+
+        message = 'expected count of connection to be 1, got 2'
         parent = element.getparent()
         element_copy = deepcopy(element)
         parent.append(element_copy)
-        self._check_error(tds_xml, 'expected count of connection to be 1, got 2')
+        self._check_error(tds_xml, message)
         parent.remove(element_copy)
 
     def test_parse_without_datasource_information(self):  # pylint: disable=locally-disabled,invalid-name
-        """
-        Asserts:
-            * When datasource is not the root object
-            * When datasource is the root object without attributes
-            * When datasource is the root object with attributes
+        """when datasource information is empty
 
+        Asserts
+        -------
+        * when datasource is not the root object
+        * when datasource is the root object without attributes
+        * when datasource is the root object with attributes
         """
+
         tds_xml = etree.Element('test')
         self._fail_on_missing_datasource_information(tds_xml)
 
@@ -104,16 +117,18 @@ class TestTDSContentHandler(unittest.TestCase):
         self._fail_on_missing_inside_connection(tds_xml)
 
     def test_parse_without_inside_connection_information(self):  # pylint: disable=locally-disabled,invalid-name
-        """
-        Asserts:
-            * When datasource is not having connection element
-            * When connection is not having named-connections element
-            * When named-connections is not having named-connection element
-            * When named-connection is not having inside `connection` element
-            * When inside connection element does not have attributes
-            * When inside connection element have attributes
+        """when connection information is empty
 
+        Asserts
+        -------
+        * when datasource is not having connection element
+        * when connection is not having named-connections element
+        * when named-connections is not having named-connection element
+        * when named-connection is not having inside `connection` element
+        * when inside connection element does not have attributes
+        * when inside connection element have attributes
         """
+
         tds_xml = etree.Element('datasource')
         tds_xml.attrib.update({
             'inline': 'true',
@@ -135,7 +150,8 @@ class TestTDSContentHandler(unittest.TestCase):
         connection_inside = etree.Element('connection')
         named_connection.append(connection_inside)
 
-        with self.assertRaisesRegexp(ContentHandlerException, '\'connection\': information is empty'):
+        message = '\'connection\': information is empty'
+        with self.assertRaisesRegexp(ContentHandlerException, message):
             self.content_handler.parse(tds_xml)
 
         connection_inside.attrib.update({
@@ -148,15 +164,17 @@ class TestTDSContentHandler(unittest.TestCase):
             self.fail('parse() raised ContentHandlerException unexpectedly')
 
     def test_parse_with_multiple_connections(self):  # pylint: disable=locally-disabled,invalid-name
-        """
-        Asserts:
-            * When named-connection has more than one inside connection
-            * When named-connections has more than one named-connection with connection inside
-            * When connection has more than one named-connections with connection inside
-            * When datasource has more than one connection with connection inside
-            * When datasource has only one connection inside with connection inside
+        """when multiple connections are given
 
+        Asserts
+        -------
+        * when named-connection has multiple connection
+        * when named-connections has multiple named-connection with connection
+        * when connection has more than one named-connections
+        * when datasource has more than one connection
+        * when datasource has only one connection
         """
+
         tds_xml = etree.Element('datasource')
         tds_xml.attrib.update({
             'inline': 'true',
@@ -190,12 +208,14 @@ class TestTDSContentHandler(unittest.TestCase):
             self.fail('parse() raised ContentHandlerException unexpectedly')
 
     def test_parse_stale_value(self):
-        """
-        Asserts:
-            * metadata property when already containting values after error remains same
-            * column definition property when already containing values after error remains same
+        """to test if stale values are persisted after failed parsing
 
+        Asserts
+        -------
+        * metadata property doesn't change when interrupted by error
+        * column definition property doesn't change when interrupted by error
         """
+
         tds_xml = etree.parse('sample/sample.tds').getroot()
 
         try:
@@ -217,19 +237,24 @@ class TestTDSContentHandler(unittest.TestCase):
 
         self.assertIsNotNone(column_definitions)
         self.assertIsInstance(column_definitions, list)
-        self.assertListEqual(column_definitions, self.content_handler.column_definitions)
+        self.assertListEqual(
+            column_definitions,
+            self.content_handler.column_definitions
+        )
 
     def test_metadata(self):
-        """
-        Asserts:
-            * Metadata is not None after parse
-            * Metadata is instance of dict after parse
-            * Metadata has 2 keys: datasource and connection after parse
-            * Metadata:datasource and Metadata:connection are instances of dict after parse
-            * Metadata:datasource and Metadata:connection are not empty after parse
-            * Metadata information is equal to expected value after parse
+        """to test metadata information after parsing
 
+        Asserts
+        -------
+        * is not None
+        * is dict
+        * has 2 keys: datasource, connection
+        * values are instances of dict
+        * values are not empty
+        * is equal to expected result
         """
+
         tds_xml = etree.parse('sample/sample.tds').getroot()
         self.content_handler.parse(tds_xml)
 
@@ -239,30 +264,32 @@ class TestTDSContentHandler(unittest.TestCase):
         self.assertIsInstance(metadata, dict)
         self.assertEqual(len(metadata), 2)
 
-        self.assertTrue(metadata.has_key('datasource'))
+        self.assertTrue('datasource' in metadata)
         self.assertIsInstance(metadata['datasource'], dict)
         self.assertFalse(len(metadata['datasource']) == 0)
 
-        self.assertTrue(metadata.has_key('connection'))
+        self.assertTrue('connection' in metadata)
         self.assertIsInstance(metadata['connection'], dict)
         self.assertFalse(len(metadata['connection']) == 0)
 
-        with open('tests/resources/sample-datasource-metadata-definition.yaml', 'r') as stream:
+        with open(config.TEST_DS_RESULT_METADATA_PATH, 'r') as stream:
             expected_result = yaml.load(stream)
             self.assertDictEqual(metadata, expected_result)
 
     def test_column_definitions(self):
-        """
-        Asserts:
-            * Column Definitions is not None after parse
-            * Column Definitions is instance of list after parse
-            * Column Definitions has expected length equal to column length in datasource
-            * Column Definitions each element is a dict
-            * Column Definitions each element has 3 keys namely local-name, parent-name, local-type
-            * Column Definitions each element each key value is instance of str
-            * Column Definitions value is equal to expected value
+        """to test column definition method
 
+        Asserts
+        -------
+        * is not None
+        * is list
+        * has length equal to column length in datasource
+        * each elemet is a dict
+        * each element has keys: local-name, parent-name and local-type
+        * each element key values are string
+        * is equal to expected result
         """
+
         tds_xml = etree.parse('sample/sample.tds').getroot()
         self.content_handler.parse(tds_xml)
 
@@ -275,15 +302,15 @@ class TestTDSContentHandler(unittest.TestCase):
         for definition in column_definitions:
             self.assertIsInstance(definition, dict)
 
-            self.assertTrue(definition.has_key('local-name'))
-            self.assertTrue(definition.has_key('parent-name'))
-            self.assertTrue(definition.has_key('local-type'))
+            self.assertTrue('local-name' in definition)
+            self.assertTrue('parent-name' in definition)
+            self.assertTrue('local-type' in definition)
 
             self.assertIsInstance(definition['local-name'], unicode)
             self.assertIsInstance(definition['parent-name'], unicode)
             self.assertIsInstance(definition['local-type'], unicode)
 
-        with open('tests/resources/sample-datasource-column-definitions.yaml', 'r') as stream:
+        with open(config.TEST_DS_RESULT_COLUMN_DEFINITION_PATH, 'r') as stream:
             expected_result = yaml.load(stream)
             self.assertListEqual(column_definitions, expected_result)
 
