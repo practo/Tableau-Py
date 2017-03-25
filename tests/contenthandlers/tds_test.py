@@ -58,7 +58,7 @@ class TestTDSContentHandler(unittest.TestCase):
         self.assertIsInstance(self.content_handler.column_definitions, list)
         self.assertEqual(self.content_handler.column_definitions, [])
 
-    def _fail_on_missing_datasource_information(self, tds_xml):  # pylint: disable=locally-disabled,invalid-name
+    def _fail_on_missing_datasource_information(self, tds_xml):
         """checks if fails on missing datasource information
 
         Checks if parsing `tds_xml` without datasource information
@@ -67,7 +67,7 @@ class TestTDSContentHandler(unittest.TestCase):
 
         self._check_error(tds_xml, '\'datasource\': information is empty')
 
-    def _fail_on_missing_inside_connection(self, tds_xml):  # pylint: disable=locally-disabled,invalid-name
+    def _fail_on_missing_inside_connection(self, tds_xml):
         """checks if fails on missing connection information
 
         Checks if parsing `tds_xml` without connection information
@@ -77,7 +77,7 @@ class TestTDSContentHandler(unittest.TestCase):
         message = 'expected count of connection to be 1, got 0'
         self._check_error(tds_xml, message)
 
-    def _fail_on_multiple_connections(self, tds_xml, element):  # pylint: disable=locally-disabled,invalid-name
+    def _fail_on_multiple_connections(self, tds_xml, element):
         """checks if fail on multiple connections
 
         Checks if parsing `tds_xml` with multiple connection information
@@ -94,7 +94,7 @@ class TestTDSContentHandler(unittest.TestCase):
         self._check_error(tds_xml, message)
         parent.remove(element_copy)
 
-    def test_parse_without_datasource_information(self):  # pylint: disable=locally-disabled,invalid-name
+    def test_parse_without_datasource_information(self):
         """when datasource information is empty
 
         Asserts
@@ -116,7 +116,7 @@ class TestTDSContentHandler(unittest.TestCase):
         })
         self._fail_on_missing_inside_connection(tds_xml)
 
-    def test_parse_without_inside_connection_information(self):  # pylint: disable=locally-disabled,invalid-name
+    def test_parse_without_inside_connection_information(self):
         """when connection information is empty
 
         Asserts
@@ -163,7 +163,7 @@ class TestTDSContentHandler(unittest.TestCase):
         except ContentHandlerException:
             self.fail('parse() raised ContentHandlerException unexpectedly')
 
-    def test_parse_with_multiple_connections(self):  # pylint: disable=locally-disabled,invalid-name
+    def test_parse_with_multiple_connections(self):
         """when multiple connections are given
 
         Asserts

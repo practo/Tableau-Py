@@ -25,7 +25,7 @@ class TestTDSReader(unittest.TestCase):
     def setUp(self):
         self.content_handler = TDSContentHandler()
         self.reader = TDSReader(self.content_handler)
-        self.maxDiff = None  # pylint: disable=locally-disabled,invalid-name
+        self.maxDiff = None
 
     def tearDown(self):
         self.content_handler = None

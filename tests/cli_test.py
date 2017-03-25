@@ -202,7 +202,7 @@ class TestAutoExtractCommand(unittest.TestCase):
         self.assertFalse(os.path.exists('sample1.tde'))
 
     @isolated_filesystem
-    def test_with_single_file_multiple_times(self):  # pylint: disable=locally-disabled,invalid-name
+    def test_with_single_file_multiple_times(self):
         """Tests with single file passed as multiple params
 
         Asserts
@@ -238,7 +238,7 @@ class TestAutoExtractCommand(unittest.TestCase):
         self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
-    def test_with_multiple_calls_without_overwrite(self):  # pylint: disable=locally-disabled,invalid-name
+    def test_with_multiple_calls_without_overwrite(self):
         """Tests with multiple calls on a file without overwrite option
 
         Asserts
@@ -391,7 +391,7 @@ class TestAutoExtractCommand(unittest.TestCase):
         self.assertEqual(len(self.FAILED_PATTERN.findall(result.output)), 0)
 
     @isolated_filesystem
-    def test_with_output_dir_when_not_exist(self):  # pylint: disable=locally-disabled,invalid-name
+    def test_with_output_dir_when_not_exist(self):
         """Tests with output dir option when it doesn't exists
 
         Asserts
