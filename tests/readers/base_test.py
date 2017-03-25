@@ -18,6 +18,7 @@ class TestReader(unittest.TestCase):
     """Unit Test Cases for Reader"""
 
     EXTENSION = '.ext'
+    maxDiff = True
 
     def setUp(self):
         self.reader = Reader(self.EXTENSION)
@@ -33,7 +34,7 @@ class TestReader(unittest.TestCase):
         * Raises ReaderException for missing file / directory
         * Raises ReaderException when file expected but folder or
           something other than file given
-        * Raises ReaderException when file given does not have .tds extension in name
+        * Raises ReaderException when file does not have correct extension
         * For each assertions above:
             - checks original exception type
             - checks if their cause is None
