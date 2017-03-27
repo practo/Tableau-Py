@@ -36,6 +36,11 @@ class TestTDSReader(ReaderBaseTest):
         self.assertIsInstance(metadata, dict)
         self.assertDictEqual(metadata, expected_value)
 
+    def test_extension(self):
+        """Tests extension property"""
+
+        self.assertEqual(self.reader.extension, '.tds')
+
     def test_get_datasource_metadata(self):
         """Tests get_datasource_metadata method
 
