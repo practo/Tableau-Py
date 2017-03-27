@@ -39,11 +39,11 @@ class ReaderBaseTest(unittest.TestCase):
 
         Asserts
         -------
-        * Raises ReaderException for missing file / directory
-        * Raises ReaderException when file expected but folder or
+        * raises ReaderException for missing file / directory
+        * raises ReaderException when file expected but folder or
           something other than file given
-        * Raises ReaderException when file does not have correct extension
-        * For each assertions above:
+        * raises ReaderException when file does not have correct extension
+        * for each assertions above:
             - checks original exception type
             - checks if their cause is None
             - checks if the arguments are correctly populated

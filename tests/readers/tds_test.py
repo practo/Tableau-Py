@@ -25,10 +25,10 @@ class TestTDSReader(ReaderBaseTest):
 
         Asserts
         -------
-        * Value is not None
-        * Value is having expected length
-        * Value is instance of dictionary
-        * Value is equal to expected value
+        * value is not None
+        * value is having expected length
+        * value is instance of dictionary
+        * value is equal to expected value
         """
 
         self.assertIsNotNone(metadata)
@@ -46,8 +46,8 @@ class TestTDSReader(ReaderBaseTest):
 
         Asserts
         -------
-        * Metadata values before calling read
-        * Metadata values after calling read
+        * value before calling read
+        * value after calling read
         """
 
         self._assert_metadata(self.reader.get_datasource_metadata(), 0, {})
@@ -72,10 +72,10 @@ class TestTDSReader(ReaderBaseTest):
 
         Asserts
         -------
-        * Value is not None
-        * Value is having expected length
-        * Value is instance of list
-        * Value is equal to expected value
+        * value is not None
+        * value is having expected length
+        * value is instance of list
+        * value is equal to expected value
         """
 
         self.assertIsNotNone(column_definitions)
@@ -88,8 +88,8 @@ class TestTDSReader(ReaderBaseTest):
 
         Asserts
         -------
-        * Column definition values before calling read
-        * Column definition values after calling read
+        * value before calling read
+        * value after calling read
         """
 
         self._assert_column_definitions(
