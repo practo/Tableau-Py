@@ -28,7 +28,7 @@ class TestTDSContentHandler(unittest.TestCase):
         self.content_handler = None
 
     def _check_error(self, tds_xml, regex_match):
-        """checks common assertion errors based on params passed
+        """Checks common assertion errors based on params passed
 
         Checks if parsing `tds_xml` gives assertion error matching
         `regex_match`.
@@ -59,7 +59,7 @@ class TestTDSContentHandler(unittest.TestCase):
         self.assertEqual(self.content_handler.column_definitions, [])
 
     def _fail_on_missing_datasource_information(self, tds_xml):
-        """checks if fails on missing datasource information
+        """Checks if fails on missing datasource information
 
         Checks if parsing `tds_xml` without datasource information
         gives assertion error
@@ -68,7 +68,7 @@ class TestTDSContentHandler(unittest.TestCase):
         self._check_error(tds_xml, '\'datasource\': information is empty')
 
     def _fail_on_missing_inside_connection(self, tds_xml):
-        """checks if fails on missing connection information
+        """Checks if fails on missing connection information
 
         Checks if parsing `tds_xml` without connection information
         gives assertion error
@@ -78,7 +78,7 @@ class TestTDSContentHandler(unittest.TestCase):
         self._check_error(tds_xml, message)
 
     def _fail_on_multiple_connections(self, tds_xml, element):
-        """checks if fail on multiple connections
+        """Checks if fail on multiple connections
 
         Checks if parsing `tds_xml` with multiple connection information
         gives assertion error.
@@ -95,7 +95,7 @@ class TestTDSContentHandler(unittest.TestCase):
         parent.remove(element_copy)
 
     def test_parse_without_datasource_information(self):
-        """when datasource information is empty
+        """Tests datasource information when empty
 
         Asserts
         -------
@@ -117,7 +117,7 @@ class TestTDSContentHandler(unittest.TestCase):
         self._fail_on_missing_inside_connection(tds_xml)
 
     def test_parse_without_inside_connection_information(self):
-        """when connection information is empty
+        """Tests connection information when empty
 
         Asserts
         -------
@@ -164,7 +164,7 @@ class TestTDSContentHandler(unittest.TestCase):
             self.fail('parse() raised ContentHandlerException unexpectedly')
 
     def test_parse_with_multiple_connections(self):
-        """when multiple connections are given
+        """Tests multiple connections
 
         Asserts
         -------
@@ -208,7 +208,7 @@ class TestTDSContentHandler(unittest.TestCase):
             self.fail('parse() raised ContentHandlerException unexpectedly')
 
     def test_parse_stale_value(self):
-        """to test if stale values are persisted after failed parsing
+        """Tests stale values
 
         Asserts
         -------
@@ -243,7 +243,7 @@ class TestTDSContentHandler(unittest.TestCase):
         )
 
     def test_metadata(self):
-        """to test metadata information after parsing
+        """Tests metadata property
 
         Asserts
         -------
@@ -277,7 +277,7 @@ class TestTDSContentHandler(unittest.TestCase):
             self.assertDictEqual(metadata, expected_result)
 
     def test_column_definitions(self):
-        """to test column definition method
+        """Tests column_definition property
 
         Asserts
         -------
