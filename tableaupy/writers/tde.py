@@ -229,8 +229,7 @@ class TDEWriter(Writer):
         """
 
         try:
-            tds_content_handler = TDSContentHandler()
-            tds_reader = TDSReader(tds_content_handler)
+            tds_reader = TDSReader()
             tds_reader.read(tds_file_name)
 
             output_path = self.get_output_path(tds_file_name)

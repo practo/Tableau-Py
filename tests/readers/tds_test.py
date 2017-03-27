@@ -5,81 +5,20 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os
 import unittest
 
 import yaml
 
 import config
-from tableaupy.contenthandlers import TDSContentHandler
-from tableaupy.readers import exceptions
 from tableaupy.readers import TDSReader
+from tests.readers.base_test import ReaderBaseTest
 
 
-class TestTDSReader(unittest.TestCase):
+class TestTDSReader(ReaderBaseTest):
     """Unit Test Cases for testing TDSReader"""
 
-    maxDiff = True
-
-    def setUp(self):
-        self.content_handler = TDSContentHandler()
-        self.reader = TDSReader(self.content_handler)
-
-    def tearDown(self):
-        self.content_handler = None
-        self.reader = None
-
-    def test_read(self):
-        """Tests read method
-
-        Asserts
-        -------
-        * Raises ReaderException for missing file / directory
-        * Raises ReaderException when file expected but folder or
-          something other than file is given
-        * Raises ReaderException when file does not have .tds extension
-        * For each assertions above:
-            - checks original exception type
-            - checks if their cause is None
-            - checks if the arguments are correctly populated
-            - checks if the error attributes are correctly set
-
-        TODO
-        ----
-        * check when the xml parsing of file fails ReaderException is thrown
-        * check when ContentHandler fails to parse, ReaderException is thrown
-        """
-
-        file_path = os.path.join(config.SAMPLE_PATH, 'random file.tds')
-        regex = '\'{}\': file does not exists'.format(file_path)
-        with self.assertRaisesRegexp(exceptions.ReaderException, regex) as err:
-            self.reader.read(file_path)
-
-        self.assertIsInstance(err.exception, exceptions.FileNotFound)
-        self.assertIsNone(err.exception.cause)
-        self.assertEqual(err.exception.args, (file_path,))
-        self.assertEqual(err.exception.file, file_path)
-
-        file_path = config.SAMPLE_PATH
-        regex = '\'{}\': not a file'.format(file_path)
-        with self.assertRaisesRegexp(exceptions.ReaderException, regex) as err:
-            self.reader.read(file_path)
-
-        self.assertIsInstance(err.exception, exceptions.NodeNotFile)
-        self.assertIsNone(err.exception.cause)
-        self.assertEqual(err.exception.args, (file_path,))
-        self.assertEqual(err.exception.file, file_path)
-
-        file_path = 'tox.ini'
-        regex = '\'{}\': does not have extension `.tds`'.format(file_path)
-        with self.assertRaisesRegexp(exceptions.ReaderException, regex) as err:
-            self.reader.read(file_path)
-
-        self.assertIsInstance(err.exception, exceptions.FileExtensionMismatch)
-        self.assertIsNone(err.exception.cause)
-        self.assertEqual(err.exception.args, (file_path, '.tds'))
-        self.assertEqual(err.exception.file, file_path)
-        self.assertEqual(err.exception.extension, '.tds')
+    __test__ = True
+    ReaderClass = TDSReader
 
     def _assert_metadata(self, metadata, expected_length, expected_value):
         """Asserts metadata
@@ -96,8 +35,6 @@ class TestTDSReader(unittest.TestCase):
         self.assertEqual(len(metadata), expected_length)
         self.assertIsInstance(metadata, dict)
         self.assertDictEqual(metadata, expected_value)
-
-        self.assertDictEqual(metadata, self.content_handler.metadata)
 
     def test_get_datasource_metadata(self):
         """Tests get_datasource_metadata method

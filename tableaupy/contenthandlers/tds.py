@@ -53,24 +53,6 @@ class TDSContentHandler(object):
                     'parent-name': name of the table containing column
                     'local-type': local data type of column,
                 }
-
-        Examples
-        --------
-        >>> import lxml.etree as etree
-        >>> datasource = etree.parse('sample/sample.tds').getroot()
-        >>> tds_content_handler = TDSContentHandler()
-        >>> tds_content_handler.parse(datasource)
-        >>> tds_content_handler.column_definitions[:2] == [{
-        ...     'parent-name': '[TABLE_NAME]',
-        ...     'local-name': '[LOCAL_COLUMN_NAME1]',
-        ...     'local-type': 'date',
-        ... },
-        ... {
-        ...      'parent-name': '[TABLE_NAME]',
-        ...      'local-name': '[LOCAL_COLUMN_NAME2]',
-        ...      'local-type': 'string',
-        ... }]
-        True
         """
 
         return [
@@ -92,31 +74,6 @@ class TDSContentHandler(object):
                     'datasource': datasource attributes,
                     'connection': connection attributes
                 }
-
-
-        Examples
-        --------
-        >>> import lxml.etree as etree
-        >>> datasource = etree.parse('sample/sample.tds').getroot()
-        >>> tds_content_handler = TDSContentHandler()
-        >>> tds_content_handler.parse(datasource)
-        >>> tds_content_handler.metadata == {
-        ...     u'datasource': {
-        ...         'formatted-name': 'Datasource Example',
-        ...         'inline': 'true'
-        ...     },
-        ...     u'connection': {
-        ...         'authentication': 'sqlserver',
-        ...         'class': 'sqlserver',
-        ...         'dbname': 'DATABASE_NAME',
-        ...         'minimum-driver-version': 'SQL Server Native Client 10.0',
-        ...         'odbc-native-protocol': 'yes',
-        ...         'one-time-sql': '',
-        ...         'server': '0.0.0.0',
-        ...         'username': 'username'
-        ...     }
-        ... }
-        True
         """
 
         return self._tds_metadata
