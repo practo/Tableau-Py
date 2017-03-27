@@ -53,7 +53,7 @@ def isolated_filesystem(func):
 
 
 class TestAutoExtractCommand(unittest.TestCase):
-    """Unit Test Cases for tableaupy command
+    """Unit Test Cases for auto_extract command
 
     DATA
     ----
@@ -81,8 +81,8 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Help works without any error
-        * Progress text is not displayed
+        * help works without any error
+        * progress text is not displayed
         """
 
         result = RUNNER.invoke(main, ['--help'])
@@ -95,9 +95,9 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Command throws SystemExit exception when no argument is given
-        * Progress text is not displayed
-        * Error message is displayed indicating files argument is missing
+        * throws SystemExit exception when no argument is given
+        * progress text is not displayed
+        * error message is displayed indicating files argument is missing
         """
 
         result = RUNNER.invoke(main)
@@ -115,9 +115,9 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Value is not None
-        * Value is instance of TableDefinition
-        * Value has expected column count
+        * value is not None
+        * value is instance of TableDefinition
+        * value has expected column count
         """
 
         self.assertIsNotNone(table_def)
@@ -130,16 +130,12 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Progress text is displayed
-        * Extract file exists
-        * Success is displayed
-        * Each column in extract is having the expected name
-        * Each column in extract is having the expected type
-
-        TODO
-        ----
-        * check column collation
-        * check with different collation
+        * progress text is displayed
+        * extract file exists
+        * success is displayed
+        * each column in extract is having the expected name
+        * each column in extract is having the expected type
+        * each column in extract is having the expected collation
         """
 
         result = RUNNER.invoke(main, ['sample.tds'])
@@ -198,10 +194,10 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Progress text is not displayed
-        * SystemExit error is thrown
-        * Exit code should be 2
-        * File is not created
+        * progress text is not displayed
+        * systemExit error is thrown
+        * exit code should be 2
+        * file is not created
         """
 
         result = RUNNER.invoke(main, ['sample1.tds'])
@@ -216,8 +212,8 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Should not throw error when same file is mentioned multiple times
-        * Progress text is displayed
+        * throws error when same file is mentioned multiple times
+        * progress text is displayed
         """
 
         result = RUNNER.invoke(main, ['sample.tds', 'sample.tds'])
@@ -231,10 +227,10 @@ class TestAutoExtractCommand(unittest.TestCase):
         Asserts
         -------
         * 2 different files can be invoked at the sample time
-        * Progress text is displayed
+        * progress text is displayed
         * 2 files are generated
-        * Success if returned for both the files
-        * Failed is not printed
+        * success if returned for both the files
+        * failed is not printed
         """
 
         shutil.copy('sample.tds', 'sample1.tds')
@@ -252,11 +248,11 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * If tde already exists with same table name give error
-        * Progress text is displayed
-        * Error Message and Failed object
-        * Failed is printed
-        * Success is not printed
+        * if tde already exists with same table name give error
+        * progress text is displayed
+        * error Message and Failed object
+        * failed is printed
+        * success is not printed
 
         TODO
         ----
@@ -289,11 +285,11 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Overwrite option works
-        * Progress is displayed
-        * File is generated
-        * Success is printed both the times
-        * Failed is not printed both times
+        * overwrite option works
+        * progress is displayed
+        * file is generated
+        * success is printed both the times
+        * failed is not printed both times
         """
 
         result = RUNNER.invoke(main, ['sample.tds', '--overwrite'])
@@ -315,11 +311,11 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Gives error with any other extension file
-        * Progress text is displayed
-        * Throws errors and the error message
-        * Success is not printed
-        * 1 Failed is printed
+        * gives error with any other extension file
+        * progress text is displayed
+        * throws errors and the error message
+        * success is not printed
+        * failed is printed once
         """
 
         RUNNER.invoke(main, ['sample.tds'])
@@ -346,11 +342,11 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Runs successfully when suffix option is given
-        * Progress text is displayed
-        * Success is printed
-        * Failed is not printed
-        * Generated file with suffix exists
+        * runs successfully when suffix option is given
+        * progress text is displayed
+        * success is printed
+        * failed is not printed
+        * generated file with suffix exists
         """
 
         result = RUNNER.invoke(main, ['--suffix', '_TDE', 'sample.tds'])
@@ -366,11 +362,11 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Runs successfully when prefix option is given
-        * Progress text is displayed
-        * Success is printed
-        * Failed is not printed
-        * Generated file with prefix exists
+        * runs successfully when prefix option is given
+        * progress text is displayed
+        * success is printed
+        * failed is not printed
+        * generated file with prefix exists
         """
 
         result = RUNNER.invoke(main, ['--prefix', 'TDE_', 'sample.tds'])
@@ -386,11 +382,11 @@ class TestAutoExtractCommand(unittest.TestCase):
 
         Asserts
         -------
-        * Runs successfully when prefix and suffix option is given
-        * Progress text is displayed
-        * Success is printed
-        * Failed is not printed
-        * Generated file with prefix and suffix exists
+        * runs successfully when prefix and suffix option is given
+        * progress text is displayed
+        * success is printed
+        * failed is not printed
+        * generated file with prefix and suffix exists
         """
 
         result = RUNNER.invoke(main, [
@@ -413,8 +409,8 @@ class TestAutoExtractCommand(unittest.TestCase):
         Asserts
         -------
         * completes unsuccessfully with SystemExit
-        * File is not created
-        * Progress bar is not displayed
+        * file is not created
+        * progress bar is not displayed
         """
 
         result = RUNNER.invoke(main, ['--output-dir', 'temp', 'sample.tds'])
@@ -430,10 +426,10 @@ class TestAutoExtractCommand(unittest.TestCase):
         Asserts
         -------
         * completes successfully
-        * Progress text is displayed
-        * Success is printed
-        * Failed is not printed
-        * Generated file is saved in temporary folder
+        * progress text is displayed
+        * success is printed
+        * failed is not printed
+        * generated file is saved in temporary folder
         """
 
         os.mkdir('temp')
