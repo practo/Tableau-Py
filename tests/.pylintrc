@@ -16,7 +16,7 @@ persistent=yes
 
 # List of plugins (as comma separated values of python modules names) to load,
 # usually to register additional checkers.
-load-plugins=
+load-plugins=pylint.extensions.bad_builtin,pylint.extensions.check_elif,pylint.extensions.docparams,pylint.extensions.docstyle,pylint.extensions.mccabe
 
 # Use multiple processes to speed up Pylint.
 jobs=1
@@ -217,10 +217,10 @@ module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
 module-name-hint=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
 
 # Regular expression matching correct method names
-method-rgx=[a-z_][a-z0-9_]{2,30}$
+method-rgx=[a-z_][a-z0-9_]{2,50}$
 
 # Naming hint for method names
-method-name-hint=[a-z_][a-z0-9_]{2,30}$
+method-name-hint=[a-z_][a-z0-9_]{2,50}$
 
 # Regular expression which should only match function or class names that do
 # not require a docstring.

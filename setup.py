@@ -56,28 +56,30 @@ class TableauSDKInstall(Command):
 setup(
     author='Anurag Agarwal',
     author_email='anurag.agarwal561994@gmail.com',
-    description='auto_extract',
+    description='tableaupy',
     download_url='',
     cmdclass={
         'install_dependencies': TableauSDKInstall,
     },
     entry_points={
         'console_scripts': [
-            'auto_extract = auto_extract.cli:main'
+            'auto_extract = tableaupy.cli:main'
         ]
     },
     install_requires=[
         'lxml==3.6.0',
         'pathlib2',
         'click',
+        'xmltodict',
+        'future',
     ],
     dependency_links=[
         tableau_sdk,
     ],
-    license='MIT License',
-    name='auto_extract',
+    license='Apache License (2.0)',
+    name='tableaupy',
     packages=[
-        'auto_extract',
+        'tableaupy',
     ],
     scripts=[],
     setup_requires=[
