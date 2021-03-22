@@ -67,7 +67,7 @@ setup(
         ]
     },
     install_requires=[
-        'lxml==3.6.0',
+        'lxml==4.6.3',
         'pathlib2',
         'click',
         'xmltodict',
